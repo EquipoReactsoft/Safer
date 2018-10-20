@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:gravity="center"
+    android:background="@color/colorSecondary">
+
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAFER"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50dp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/lTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lEditEmail"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:theme="@style/EditTextTheme"
+            android:padding="20dp"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/lTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lEditPassword"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:theme="@style/EditTextTheme"
+            android:padding="20dp"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorSecondary"
+        android:id="@+id/redirectMain"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/link_register"
+        android:layout_marginBottom="40dp"
+        android:background="@null"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:id="@+id/notHaveAccount"/>
+
+    <!--<TextView
+        android:id="@+id/registerByAnotherAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:text="Registrate por otra cuenta" />-->
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/signInButton"
+        android:layout_width="290dp"
+        android:layout_height="34dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="283dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
