@@ -57,7 +57,7 @@
         android:text="@string/login"
         android:background="@color/colorPrimary"
         android:textColor="@color/colorSecondary"
-        android:id="@+id/redirectMain"/>
+        android:id="@+id/btnLogIn"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
         android:background="@null"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
-        android:id="@+id/notHaveAccount"/>
+        android:id="@+id/btnIrRegisterActivity"/>
 
     <!--<TextView
         android:id="@+id/registerByAnotherAccount"
@@ -100,5 +100,11 @@
         android:layout_centerHorizontal="true"
         android:visibility="gone"
         />
+
+    <Button
+        android:id="@+id/btnCS"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cerrar Sesion" />
 
 </LinearLayout>

@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -48,11 +51,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private ProgressBar progressBar;
+    private Button btnCs;
+    /*--------------------Login Correo----------------------*/
+    private Button btnLogIn;
+    private Button btnIrRegisterActivity;
+    private EditText lEditEmail;
+    private EditText lEditPassword;
+    /*------------------------------------------------------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        btnLogIn = (Button) findViewById(R.id.btnLogIn);
+        btnIrRegisterActivity = (Button) findViewById(R.id.btnIrRegisterActivity);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -75,16 +87,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    goMainScreen();
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                       goMainScreen();
+                    }
                 }
-            }
-        };
+            };
 
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -92,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                //goMainScreen();
+                goMainScreen();
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
@@ -109,13 +122,68 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         loginButton.setReadPermissions("email");
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btnCs = (Button) findViewById(R.id.btnCS);
+        btnCs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+            }
+        });
+
+        lEditEmail = (EditText) findViewById(R.id.lEditEmail);
+        lEditPassword = (EditText) findViewById(R.id.lEditPassword);
+
+        btnLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String email = lEditEmail.getText().toString();
+                String pass = lEditPassword.getText().toString();
+
+                if(email.equals("") || pass.equals("")){
+                    Toast.makeText(getApplicationContext(), "INGRESE LOS DATOS", Toast.LENGTH_LONG).show();
+                }
+
+                if(TextUtils.isEmpty(email)){
+                    Toast.makeText(getApplicationContext(), "NECESITA INGRESAR UN CORREO VALIDO", Toast.LENGTH_LONG).show();
+                }else if(TextUtils.isEmpty(pass)){
+                    Toast.makeText(getApplicationContext(), "NECESITA INGRESAR UNA CONTRASEÑA", Toast.LENGTH_LONG).show();
+                }else {
+
+                    firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(LoginActivity.this,
+                            new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (!task.isSuccessful()) {
+                                        Toast.makeText(LoginActivity.this, "Error al Ingresa, Digite Correctamente sus Datos", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+
+        btnIrRegisterActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

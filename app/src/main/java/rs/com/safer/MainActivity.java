@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 if (user != null) {
                     setUserData(user);
                 } else {
-                    goLogInScreen();
+                    //goLogInScreen();
                 }
             }
         };
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         };
 
         if (AccessToken.getCurrentAccessToken() == null) {
-            goLoginScreen();
+            //goLoginScreen();
         } else {
             requestEmail(AccessToken.getCurrentAccessToken());
 
@@ -173,8 +173,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             Glide.with(this).load(account.getPhotoUrl()).into(photoImageView);
 
-        } else {
-            goLogInScreen();
         }
     }
 
@@ -245,16 +243,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         startActivity(intent);
     }
 
-    public void logout(View view) {
+    /*public void logout(View view) {
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
         goLoginScreen();
-    }
+    }*/
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         profileTracker.stopTracking();
     }
 }
