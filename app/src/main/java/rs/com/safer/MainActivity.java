@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private ProfileTracker profileTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         idTextView = (TextView) findViewById(R.id.idTextView);
         btnLogOut = (Button) findViewById(R.id.btnLogOut);
         btnRevoke = (Button) findViewById(R.id.btnRevoke);
+
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -107,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     setUserData(user);
-                } else {
-                    //goLogInScreen();
                 }
             }
         };
@@ -252,6 +253,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        profileTracker.stopTracking();
+        //profileTracker.stopTracking();
     }
 }

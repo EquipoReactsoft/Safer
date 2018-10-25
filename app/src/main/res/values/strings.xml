@@ -7,8 +7,8 @@
     <string name="title_activity_register">Registrate</string>
     <string name="navigation_drawer_open">Abrir Menu</string>
     <string name="navigation_drawer_close">Cerrar Menu</string>
-    <string name="nav_header_title">Usuario Uno</string>
-    <string name="nav_header_subtitle">Distrito de San Juan de Miraflores</string>
+    <string name="nav_header_title">Usuario.. </string>
+    <string name="nav_header_subtitle">Email..</string>
     <string name="nav_header_desc">Cabecera</string>
     <string name="action_settings">Configuracion</string>
     <string name="hint_name">Nombre</string>
@@ -56,4 +56,10 @@
     <string name="facebook_app_id">471606226683155</string>
     <string name="fb_login_protocol_scheme">fb471606226683155</string>
     <string name="firebase_error_login">Error al iniciar sesión en Firebase</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="link_account">Cuenta</string>
+    <string name="link_notification">Notificaciones</string>
+    <string name="link_Privacity">Politica y Privacidad</string>
+    <string name="link_About">Acerca de ...</string>
+    <string name="link_logout">Cerrar Sesion</string>
 </resources>
