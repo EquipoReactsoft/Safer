@@ -9,4 +9,9 @@
     tools:showIn="@layout/app_bar_menu"
     android:background="@color/colorSecondary">
 
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </android.support.constraint.ConstraintLayout>

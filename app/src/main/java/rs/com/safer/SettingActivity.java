@@ -33,6 +33,8 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
+        this.setTitle("Más Opciones");
+
         btnLogOut = (Button) findViewById(R.id.btnLogOutSetting);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
