@@ -74,6 +74,11 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     @Override
+    public void onBackPressed() {
+        this.finish();
+    }
+
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getApplicationContext(), "No se puedo conectar al api de google", Toast.LENGTH_SHORT).show();
     }

@@ -10,7 +10,7 @@
     <string name="nav_header_title">Usuario.. </string>
     <string name="nav_header_subtitle">Email..</string>
     <string name="nav_header_desc">Cabecera</string>
-    <string name="action_settings">Configuracion</string>
+    <string name="action_settings">Mas Opciones</string>
     <string name="hint_name">Nombre</string>
     <string name="register">Registrarte</string>
     <string name="hint_address">Dirección</string>
