@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btnAccountSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/link_account"
+        android:textAllCaps="false"
+        android:layout_marginTop="40dp"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/btnNotificationSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/link_notification"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/btnPrivacySetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/link_Privacity"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/btnAboutSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/link_About"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/btnLogOutSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/link_logout"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:textColor="@color/colorPrimary" />
+
+</LinearLayout>

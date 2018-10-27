@@ -1,4 +1,4 @@
-package rs.com.safer.Activities;
+package rs.com.safer;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -33,7 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import rs.com.safer.R;
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     /*------------------Google----------------------*/
@@ -94,8 +94,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user != null) {
-
-                        goMainScreen();
+                       goMainScreen();
                     }
                 }
             };
@@ -194,20 +193,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        //For gmail
         if (requestCode == SIGN_IN_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
-
+        //this for facebook
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-           // goMainScreen();
             firebaseAuthWithGoogle(result.getSignInAccount());
-
         } else {
             Toast.makeText(this, R.string.not_log_in, Toast.LENGTH_SHORT).show();
         }
@@ -239,12 +236,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                progressBar.setVisibility(View.GONE);
-                signInButton.setVisibility(View.VISIBLE);
-
                 if (!task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.not_firebase_auth, Toast.LENGTH_SHORT).show();
                 }
+                progressBar.setVisibility(View.GONE);
+                signInButton.setVisibility(View.VISIBLE);
             }
         });
     }

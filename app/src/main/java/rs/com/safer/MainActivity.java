@@ -1,4 +1,4 @@
-package rs.com.safer.Activities;
+package rs.com.safer;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private ProfileTracker profileTracker;
 
     Boolean exist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -400,18 +401,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
-    /*----------------------------------------------------*/
-    /*private void AgregarUsuario(FirebaseUser user){
-        Usuarios usuario = new Usuarios();
-        usuario.setCorreo(user.getEmail());
-        usuario.setPassword("");
-        usuario.setLatitud(0);
-        usuario.setLongitud(0);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference usuariosRef = database.getReference().getRef();
-        usuariosRef.child("Usuarios").push().setValue(usuario);
-    }*/
 
     /*---------------------Facebook----------------------*/
     private void displayProfileInfo(Profile profile) {
@@ -421,6 +410,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         nameTextView.setText(name);
         idTextView.setText(id);
+
         Glide.with(getApplicationContext())
                 .load(photoUrl)
                 .into(photoImageView);
