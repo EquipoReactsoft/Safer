@@ -1,4 +1,4 @@
-package rs.com.safer.Activities.Models;
+package rs.com.safer.Models;
 
 public class Usuarios {
 
