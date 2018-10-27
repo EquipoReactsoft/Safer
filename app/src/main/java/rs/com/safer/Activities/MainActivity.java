@@ -1,9 +1,16 @@
-package rs.com.safer;
+package rs.com.safer.Activities;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,16 +30,40 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import rs.com.safer.Activities.Models.Usuarios;
+import rs.com.safer.R;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+
+    Toolbar toolbar;
+    NavigationView navigationView;
+    DrawerLayout drawerLayout;
+
+    /*HEADER NAVIGAITONVIEW*/
+    private TextView nombreHView;
+    private ImageView photoHView;
+    private TextView correoTextHView;
+    private TextView idTextHView;
+
 
     private ImageView photoImageView;
     private TextView nameTextView;
@@ -46,10 +77,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private ProfileTracker profileTracker;
+
+    Boolean exist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        navigationView = (NavigationView) findViewById(R.id.menu);
+        View header = navigationView.getHeaderView(0);
+        nombreHView = (TextView) header.findViewById(R.id.nametextView);
+        photoHView = (ImageView) header.findViewById(R.id.photoProfile);
+        correoTextHView = (TextView) header.findViewById(R.id.correotextView);
+        idTextHView = (TextView) header.findViewById(R.id.idView);
+
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerActivity_main);
+        navigationView = (NavigationView) findViewById(R.id.menu);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         photoImageView = (ImageView) findViewById(R.id.photoImageView);
         nameTextView = (TextView) findViewById(R.id.nameTextView);
@@ -57,6 +105,45 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         idTextView = (TextView) findViewById(R.id.idTextView);
         btnLogOut = (Button) findViewById(R.id.btnLogOut);
         btnRevoke = (Button) findViewById(R.id.btnRevoke);
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+                        } else {
+                            item.setChecked(true);
+
+                        }
+
+                        drawerLayout.closeDrawers();
+
+                        return false;
+                    }
+                });
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.open,
+                R.string.close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -104,9 +191,63 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     setUserData(user);
+
+                    DatabaseReference rootRef;
+                    rootRef = FirebaseDatabase.getInstance().getReference();
+
+                    rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot datasnapshot) {
+
+                            for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
+                                Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
+                                if(urs.getCorreo().equals(user.getEmail())){
+                                    exist=true;
+                                    break;
+                                }else{
+                                    exist=false;
+                                }
+                            }
+
+                            if(exist == true){
+
+                            }else{
+                                Usuarios usuario = new Usuarios();
+                                usuario.setCorreo(user.getEmail());
+                                usuario.setPassword(user.getUid());
+                                usuario.setLatitud(0.0);
+                                usuario.setLongitud(0.0);
+
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final DatabaseReference usuariosRef = database.getReference().getRef();
+                                usuariosRef.child("Usuarios").push().setValue(usuario);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+
+                    });
+
+                    /*boolean b = Verific(user);
+                    if(b == true){
+
+                    }else{
+                        Usuarios usuario = new Usuarios();
+                        usuario.setCorreo(user.getEmail());
+                        usuario.setPassword(user.getUid());
+                        usuario.setLatitud(0);
+                        usuario.setLongitud(0);
+
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        final DatabaseReference usuariosRef = database.getReference().getRef();
+                        usuariosRef.child("Usuarios").push().setValue(usuario);
+                    }*/
                 } else {
                     //goLogInScreen();
                 }
@@ -137,11 +278,76 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
+    public boolean Verific(final FirebaseUser user){
+        DatabaseReference rootRef;
+
+        rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot datasnapshot) {
+
+                for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
+                    Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
+                    if(urs.getCorreo().equals(user.getEmail())){
+                        exist=true;
+                        break;
+                    }else{
+                        exist=false;
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+
+        return exist=false;
+    }
+
+
+/*
+    public void RegisterWhitEmail(FirebaseUser user){
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getUid()).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(!task.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "TENEMOS UN PROBLEMA CON EL REGISTRO - FIREBASE.ERROR", Toast.LENGTH_LONG).show();
+                }else{
+                    firebaseAuth.signOut();
+                    Toast.makeText(getApplicationContext(), "REGISTRO CORRECTO email", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        });
+    }
+*/
     private void setUserData(FirebaseUser user) {
-        nameTextView.setText(user.getDisplayName());
-        emailTextView.setText(user.getEmail());
-        idTextView.setText(user.getUid());
-        Glide.with(this).load(user.getPhotoUrl()).into(photoImageView);
+        nombreHView.setText(user.getDisplayName());
+        correoTextHView.setText(user.getEmail());
+        idTextHView.setText(user.getUid());
+        Glide.with(this).load(user.getPhotoUrl()).into(photoHView);
+
+        /*boolean b = Verific(user);
+        if(b == true){
+
+        }else{
+            Usuarios usuario = new Usuarios();
+            usuario.setCorreo(user.getEmail());
+            usuario.setPassword(user.getUid());
+            usuario.setLatitud(0);
+            usuario.setLongitud(0);
+
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            final DatabaseReference usuariosRef = database.getReference().getRef();
+            usuariosRef.child("Usuarios").push().setValue(usuario);
+        }*/
     }
 
     @Override
@@ -194,6 +400,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
+    /*----------------------------------------------------*/
+    /*private void AgregarUsuario(FirebaseUser user){
+        Usuarios usuario = new Usuarios();
+        usuario.setCorreo(user.getEmail());
+        usuario.setPassword("");
+        usuario.setLatitud(0);
+        usuario.setLongitud(0);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference usuariosRef = database.getReference().getRef();
+        usuariosRef.child("Usuarios").push().setValue(usuario);
+    }*/
 
     /*---------------------Facebook----------------------*/
     private void displayProfileInfo(Profile profile) {
@@ -203,7 +421,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         nameTextView.setText(name);
         idTextView.setText(id);
-
         Glide.with(getApplicationContext())
                 .load(photoUrl)
                 .into(photoImageView);

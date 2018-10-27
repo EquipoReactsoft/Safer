@@ -17,6 +17,8 @@
     <string name="link_register">No tienes cuenta? Registrate aqui!</string>
     <string name="action_singOut">Cerrar sesion</string>
     <string name="conditionText">Al registrarme estoy de acuerdo con los Terminos, Condiciones y Politicas de Privacidad de SAFER</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 
     <plurals name="likes_count">
         <item quantity="one">%d like</item>

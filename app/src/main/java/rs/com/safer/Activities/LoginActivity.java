@@ -1,4 +1,4 @@
-package rs.com.safer;
+package rs.com.safer.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -33,7 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.Arrays;
+import rs.com.safer.R;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     /*------------------Google----------------------*/
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private ProgressBar progressBar;
-    private Button btnCs;
+    //private Button btnCs;
     /*--------------------Login Correo----------------------*/
     private Button btnLogIn;
     private Button btnIrRegisterActivity;
@@ -94,7 +94,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user != null) {
-                       goMainScreen();
+
+                        goMainScreen();
                     }
                 }
             };
@@ -122,13 +123,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         loginButton.setReadPermissions("email");
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnCs = (Button) findViewById(R.id.btnCS);
-        btnCs.setOnClickListener(new View.OnClickListener() {
+        //btnCs = (Button) findViewById(R.id.btnCS);
+        /*btnCs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
             }
-        });
+        });*/
 
         lEditEmail = (EditText) findViewById(R.id.lEditEmail);
         lEditPassword = (EditText) findViewById(R.id.lEditPassword);
@@ -206,6 +207,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (result.isSuccess()) {
            // goMainScreen();
             firebaseAuthWithGoogle(result.getSignInAccount());
+
         } else {
             Toast.makeText(this, R.string.not_log_in, Toast.LENGTH_SHORT).show();
         }
@@ -233,11 +235,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         progressBar.setVisibility(View.VISIBLE);
         signInButton.setVisibility(View.GONE);
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+        final AuthCredential credential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
                 progressBar.setVisibility(View.GONE);
                 signInButton.setVisibility(View.VISIBLE);
 

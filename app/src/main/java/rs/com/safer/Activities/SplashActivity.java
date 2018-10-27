@@ -1,4 +1,4 @@
-package rs.com.safer;
+package rs.com.safer.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import rs.com.safer.R;
 
 public class SplashActivity extends AppCompatActivity {
 

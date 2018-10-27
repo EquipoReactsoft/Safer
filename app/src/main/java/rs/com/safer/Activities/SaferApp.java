@@ -1,4 +1,4 @@
-package rs.com.safer;
+package rs.com.safer.Activities;
 
 import android.app.Application;
 

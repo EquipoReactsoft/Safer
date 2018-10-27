@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/MiUbicacion"
+            android:checked="false"
+            android:icon="@drawable/monedas"
+            android:title="Mi Ubicacion"></item>
+
+        <item
+            android:id="@+id/BuscarUbicacion"
+            android:checked="false"
+            android:icon="@drawable/monedas"
+            android:title="Buscar Ubicacion"></item>
+
+        <item
+            android:id="@+id/BuscarParadero"
+            android:checked="false"
+            android:icon="@drawable/monedas"
+            android:title="Buscar Paradero"></item>
+
+        <item
+            android:id="@+id/Cerrar_Sesion"
+            android:checked="false"
+            android:icon="@drawable/monedas"
+            android:title="Cerrar Sesion"></item>
+    </group>
+</menu>
