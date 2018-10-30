@@ -228,7 +228,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount signInAccount) {
-
         progressBar.setVisibility(View.VISIBLE);
         signInButton.setVisibility(View.GONE);
 

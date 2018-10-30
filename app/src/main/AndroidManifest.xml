@@ -1,81 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="rs.com.safer">
+        package="rs.com.safer">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.CAMERA" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+        <uses-feature android:name="android.hardware.camera" />
+        <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+        <permission android:name="com.vallabh.googlemapspractice.permission.MAPS_RECEIVE" android:protectionLevel="signature" />
 
-    <permission
-        android:name="com.vallabh.googlemapspractice.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-    <application
-        android:name=".SaferApp"
-        android:allowBackup="true"
-        android:icon="@drawable/ic_logo_safer"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+        <application
+            android:name=".SaferApp"
+            android:allowBackup="true"
+            android:icon="@drawable/safer_icon"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/facebook_app_id" />
 
-        <activity android:name=".MainActivity" />
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            <activity android:name=".MainActivity" />
+            <activity
+                android:name=".LoginActivity"
+                android:theme="@style/AppTheme" />
+            <activity
+                android:name=".SplashActivity">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-        </activity>
-        <activity android:name=".RegisterActivity" />
-        <activity
-            android:name=".MenuActivity"
-            android:label="@string/title_activity_menu"
-            android:theme="@style/AppTheme.NoActionBar" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+            </activity>
+            <activity android:name=".RegisterActivity" />
+            <activity
+                android:name=".MenuActivity"
+                android:label="@string/title_activity_menu"
+                android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".SettingActivity" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyARmjL7MdpRA17zIlpLFa6K4vnSJHMw4oM" />
+            <activity android:name=".SettingActivity" />
+            <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyARmjL7MdpRA17zIlpLFa6K4vnSJHMw4oM" />
 
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".MapsActivity2"
-            android:label="@string/title_activity_maps2">
-
-        </activity>
-    </application>
+            <activity
+                android:name=".MapsActivity"
+                android:label="@string/title_activity_map" />
+        </application>
 
 </manifest>

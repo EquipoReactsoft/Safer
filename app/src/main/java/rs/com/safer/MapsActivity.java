@@ -1,6 +1,10 @@
 package rs.com.safer;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,7 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import android.Manifest;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -89,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             marcador.remove();
         }
         marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual")
-                .icon(bitmapDescriptorFromVector(this, R.drawable.address_icon_location)));
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_home)));
         mMap.animateCamera(miUbicacion);
     }
 
@@ -125,37 +129,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void miUbicacion() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if(!mLocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ))
+            {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                        .setCancelable(false)
+                        .setPositiveButton("Goto Settings Page To Enable GPS",
+                                new DialogInterface.OnClickListener(){
+                                    public void onClick(DialogInterface dialog, int id){
+                                        Intent callGPSSettingIntent = new Intent(
+                                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                        startActivity(callGPSSettingIntent);
+                                    }
+                                });
+                alertDialogBuilder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = alertDialogBuilder.create();
+                alert.show();
+            }
+            //return;
         }
-        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location location = getLastKnownLocation();
+        Location location;
+
+        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        if (location == null ) {
+            location = getLastKnownLocation();
+        }
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates
-                (LocationManager.GPS_PROVIDER,
-                15000,
-                0,
-                locListener);
+                (LocationManager.PASSIVE_PROVIDER,
+                        15000,
+                        0,
+                        locListener);
     }
 
     private Location getLastKnownLocation() {
-        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return null;
+            mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+            List<String> providers = mLocationManager.getProviders(true);
+            Location bestLocation = null;
+            for (String provider : providers) {
+                @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
+                if (l == null) {
+                    continue;
+                }
+                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                    // Found best last known location: %s", l);
+                    bestLocation = l;
+                }
             }
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
+            return bestLocation;
         }
-        return bestLocation;
-    }
 }
