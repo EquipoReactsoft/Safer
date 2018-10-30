@@ -44,8 +44,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -59,6 +62,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import rs.com.safer.Fragment.PruebaFragment;
+import rs.com.safer.Fragment.UbicacionFragment;
+import rs.com.safer.Models.Usuarios;
 
 public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -90,7 +97,7 @@ public class MenuActivity extends AppCompatActivity
     private File photoFile;
 
     private UploadTask uploadTask;
-
+    Boolean exist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +133,74 @@ public class MenuActivity extends AppCompatActivity
             }
         };
         //endregion InitializeGmailAuth
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    setUserData(user);
+
+                    DatabaseReference rootRef;
+                    rootRef = FirebaseDatabase.getInstance().getReference();
+
+                    rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot datasnapshot) {
+
+                            for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
+                                Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
+                                if(urs.getCorreo().equals(user.getEmail())){
+                                    exist=true;
+                                    break;
+                                }else{
+                                    exist=false;
+                                }
+                            }
+
+                            if(exist == true){
+
+                            }else{
+                                Usuarios usuario = new Usuarios();
+                                    usuario.setCorreo(user.getEmail());
+                                    usuario.setPassword(user.getUid());
+                                    usuario.setLatitud(0.0);
+                                    usuario.setLongitud(0.0);
+
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final DatabaseReference usuariosRef = database.getReference().getRef();
+                                usuariosRef.child("Usuarios").push().setValue(usuario);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+
+                    });
+
+                    /*boolean b = Verific(user);
+                    if(b == true){
+
+                    }else{
+                        Usuarios usuario = new Usuarios();
+                        usuario.setCorreo(user.getEmail());
+                        usuario.setPassword(user.getUid());
+                        usuario.setLatitud(0);
+                        usuario.setLongitud(0);
+
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        final DatabaseReference usuariosRef = database.getReference().getRef();
+                        usuariosRef.child("Usuarios").push().setValue(usuario);
+                    }*/
+                } else {
+                    //goLogInScreen();
+                }
+            }
+        };
 
         //region InitializeFacebookAuth
         profileTracker = new ProfileTracker() {
@@ -212,9 +287,9 @@ public class MenuActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_gallery) {
-
+            fragment = new PruebaFragment();
         } else if (id == R.id.nav_slideshow) {
-
+            fragment = new UbicacionFragment();
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

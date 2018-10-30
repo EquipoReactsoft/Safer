@@ -1,6 +1,9 @@
 package rs.com.safer;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +24,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -40,6 +44,8 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import rs.com.safer.Fragment.PruebaFragment;
+import rs.com.safer.Fragment.UbicacionFragment;
 import rs.com.safer.Models.Usuarios;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -105,6 +111,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             item.setChecked(false);
                         } else {
                             item.setChecked(true);
+
+                        }
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                        switch (item.getItemId()) {
+                            case R.id.MiUbicacion:
+                                //UbicacionFragment ubicacionFragment = new UbicacionFragment();
+                                //transaction.replace(R.id.fragment, ubicacionFragment);
+                                //transaction.commit();
+                                //setFragment(0);
+
+                                break;
+                            case R.id.BuscarUbicacion:
+                                PruebaFragment pfsss = new PruebaFragment();
+                                //transaction.remove(R.id.fragment, pfsss);
+                                //transaction.commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new PruebaFragment()).commit();
+                                break;
+                                /*ObtenerAutosFragment obtenerAutosFragment = new ObtenerAutosFragment();
+                                transaction.replace(R.id.fragment, obtenerAutosFragment);
+                                transaction.commit();
+                                break;*/
+                            case R.id.BuscarParadero:
+
+                                Toast.makeText(getApplicationContext(), "Buscar Paredero", Toast.LENGTH_LONG).show();
+                                /*ImagenesFragment ordenar = new ImagenesFragment();
+                                transaction.replace(R.id.fragment, ordenar);
+                                transaction.commit();*/
+                                break;
+                            //setFragment(2);
+                            case R.id.Cerrar_Sesion:
+
+                                /*firebaseAuth.signOut();
+                                Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                                    @Override
+                                    public void onResult(@NonNull Status status) {
+                                        if (status.isSuccess()) {
+                                            goLogInScreenGoogle();
+
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "No se pudo WTHA", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                                FirebaseAuth.getInstance().signOut();
+                                LoginManager.getInstance().logOut();
+                                goLoginScreenFacebook();
+                                firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+                                transaction.commit();
+                                //setFragment(3);
+                                */
+                                break;
 
                         }
 

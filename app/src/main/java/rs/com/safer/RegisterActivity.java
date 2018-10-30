@@ -49,7 +49,9 @@ public class RegisterActivity extends AppCompatActivity {
                 }else if(userCorreo.equals("") || userPassword.equals("")){
                     Toast.makeText(RegisterActivity.this, "INGRESE DATOS CORRESPONDIENTES", Toast.LENGTH_LONG).show();
                 }else{
-                    auth.createUserWithEmailAndPassword(userCorreo, userPassword).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                    auth.createUserWithEmailAndPassword(userCorreo, userPassword)
+                            .addOnCompleteListener(RegisterActivity.this,
+                                                          new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
 
