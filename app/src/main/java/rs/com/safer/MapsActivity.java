@@ -42,6 +42,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     LocationManager mLocationManager;
 
+    boolean canGetLocation = true;
+
+    Location location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,37 +135,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            if(!mLocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ))
-            {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
-                        .setCancelable(false)
-                        .setPositiveButton("Goto Settings Page To Enable GPS",
-                                new DialogInterface.OnClickListener(){
-                                    public void onClick(DialogInterface dialog, int id){
-                                        Intent callGPSSettingIntent = new Intent(
-                                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                        startActivity(callGPSSettingIntent);
-                                    }
-                                });
-                alertDialogBuilder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id){
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alert = alertDialogBuilder.create();
-                alert.show();
-            }
             //return;
         }
         Location location;
 
         location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-        if (location == null ) {
+        if (location == null) {
             location = getLastKnownLocation();
+        }
+        if (location == null) {
+            location = getLocation();
         }
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates
@@ -172,19 +156,78 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private Location getLastKnownLocation() {
-            mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
-            List<String> providers = mLocationManager.getProviders(true);
-            Location bestLocation = null;
-            for (String provider : providers) {
-                @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
-                if (l == null) {
-                    continue;
-                }
-                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                    // Found best last known location: %s", l);
-                    bestLocation = l;
-                }
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
             }
-            return bestLocation;
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
         }
+        return bestLocation;
+    }
+
+    @SuppressLint("MissingPermission")
+    public Location getLocation() {
+        int MIN_TIME_BW_UPDATES = 10000;
+        int MIN_DISTANCE_CHANGE_FOR_UPDATES = 10000;
+        try {
+            mLocationManager = (LocationManager) getApplicationContext()
+                    .getSystemService(LOCATION_SERVICE);
+
+            boolean isGPSEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            boolean isPassiveEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
+
+            boolean isNetworkEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (isGPSEnabled || isNetworkEnabled || isPassiveEnabled) {
+
+                this.canGetLocation = true;
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled && location == null) {
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                    //Log.d("GPS", "GPS Enabled");
+                    if (mLocationManager != null) {
+                        location = mLocationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    }
+                }
+                if (isPassiveEnabled && location == null) {
+                    mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                    // Log.d("Network", "Network Enabled");
+                    if (mLocationManager != null) {
+                        location = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                    }
+                }
+
+                if (isNetworkEnabled && location == null) {
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                    //Log.d("Network", "Network Enabled");
+                    if (mLocationManager != null) {
+                        location = mLocationManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return location;
+    }
 }
