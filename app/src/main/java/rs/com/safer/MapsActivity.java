@@ -32,7 +32,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double lat = 0.0;
     double log = 0.0;
 
-
     private GoogleMap mMap;
     private Marker marcador;
 
