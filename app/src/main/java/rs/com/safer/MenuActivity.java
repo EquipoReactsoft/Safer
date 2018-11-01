@@ -283,17 +283,15 @@ public class MenuActivity extends AppCompatActivity
         Fragment fragment = null;
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_report) {
             fragment = new ReportFragment();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_comunity) {
             fragment = new PruebaFragment();
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_information) {
             fragment = new UbicacionFragment();
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_contact) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_web) {
 
         }
 
