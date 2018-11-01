@@ -150,7 +150,6 @@ public class MenuActivity extends AppCompatActivity
 
                         @Override
                         public void onDataChange(DataSnapshot datasnapshot) {
-
                             for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
                                 Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
                                 if(urs.getCorreo().equals(user.getEmail())){
@@ -377,24 +376,24 @@ public class MenuActivity extends AppCompatActivity
         request.executeAsync();
     }
 
-//    private void startCamera() {
-//        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
-//
-//            } else {
-//                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, CAMERA_REQUEST);
-//            }
-//        } else {
-//            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            startActivityForResult(cameraIntent, CAMERA_REQUEST);
-//        }
-//    }
+    private void startCamera() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        startCamera();
-//    }
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, CAMERA_REQUEST);
+            }
+        } else {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        startCamera();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -428,9 +427,6 @@ public class MenuActivity extends AppCompatActivity
 
         }
     }
-
-
-
 
     private void dispatchTakePictureIntent() {
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -495,22 +491,22 @@ public class MenuActivity extends AppCompatActivity
             }
         });
 
-//        Uri file = Uri.fromFile(photoFile);
-//        StorageReference riversRef = mountainsRef.child("images/"+file.getLastPathSegment());
-//        uploadTask = riversRef.putFile(file);
-//
-//// Register observers to listen for when the download is done or if it fails
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                Toast.makeText(getApplicationContext(), "FAIL FAIL FAIL FAIL FAIL", Toast.LENGTH_SHORT).show();
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        Uri file = Uri.fromFile(photoFile);
+        StorageReference riversRef = mountainsRef.child("images/"+file.getLastPathSegment());
+        uploadTask = riversRef.putFile(file);
+
+// Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(getApplicationContext(), "FAIL FAIL FAIL FAIL FAIL", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

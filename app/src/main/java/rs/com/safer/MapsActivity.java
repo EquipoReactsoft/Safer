@@ -1,6 +1,10 @@
 package rs.com.safer;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,7 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import android.Manifest;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -36,6 +40,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker marcador;
 
     LocationManager mLocationManager;
+
+    boolean canGetLocation = true;
+
+    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             marcador.remove();
         }
         marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual")
-                .icon(bitmapDescriptorFromVector(this, R.drawable.address_icon_location)));
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_home)));
         mMap.animateCamera(miUbicacion);
     }
 
@@ -124,18 +132,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void miUbicacion() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //return;
         }
-        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location location = getLastKnownLocation();
+        Location location;
+
+        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        if (location == null) {
+            location = getLastKnownLocation();
+        }
+        if (location == null) {
+            location = getLocation();
+        }
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates
-                (LocationManager.GPS_PROVIDER,
-                15000,
-                0,
-                locListener);
+                (LocationManager.PASSIVE_PROVIDER,
+                        15000,
+                        0,
+                        locListener);
     }
 
     private Location getLastKnownLocation() {
@@ -143,10 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return null;
-            }
-            Location l = mLocationManager.getLastKnownLocation(provider);
+            @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
             if (l == null) {
                 continue;
             }
@@ -156,5 +169,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         return bestLocation;
+    }
+
+    @SuppressLint("MissingPermission")
+    public Location getLocation() {
+        int MIN_TIME_BW_UPDATES = 10000;
+        int MIN_DISTANCE_CHANGE_FOR_UPDATES = 10000;
+        try {
+            mLocationManager = (LocationManager) getApplicationContext()
+                    .getSystemService(LOCATION_SERVICE);
+
+            boolean isGPSEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            boolean isPassiveEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
+
+            boolean isNetworkEnabled = mLocationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (isGPSEnabled || isNetworkEnabled || isPassiveEnabled) {
+
+                this.canGetLocation = true;
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled && location == null) {
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                    //Log.d("GPS", "GPS Enabled");
+                    if (mLocationManager != null) {
+                        location = mLocationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    }
+                }
+                if (isPassiveEnabled && location == null) {
+                    mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                    // Log.d("Network", "Network Enabled");
+                    if (mLocationManager != null) {
+                        location = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                    }
+                }
+
+                if (isNetworkEnabled && location == null) {
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
+                    //Log.d("Network", "Network Enabled");
+                    if (mLocationManager != null) {
+                        location = mLocationManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return location;
     }
 }
