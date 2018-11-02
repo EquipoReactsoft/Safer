@@ -14,7 +14,7 @@
     <string name="hint_name">Nombre</string>
     <string name="register">Registrarte</string>
     <string name="hint_address">Dirección</string>
-    <string name="link_register">No tienes cuenta? Registrate aqui!</string>
+    <string name="link_register">¿No tienes cuenta? ¡Registrate AQUI!</string>
     <string name="action_singOut">Cerrar sesion</string>
     <string name="conditionText">Al registrarme estoy de acuerdo con los Terminos, Condiciones y Politicas de Privacidad de SAFER</string>
     <string name="open">Open</string>
@@ -68,4 +68,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_map">Mapa</string>
+    <string name="safer_name_upper_case">SAFER</string>
+    <string name="put_email">Ingrese Correo</string>
+    <string name="put_password">Ingrese Contraseña</string>
+    <string name="add_user_text_button">Agregar Usuario</string>
 </resources>

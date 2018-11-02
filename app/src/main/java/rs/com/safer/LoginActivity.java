@@ -63,8 +63,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLogIn = (Button) findViewById(R.id.btnLogIn);
-        btnIrRegisterActivity = (Button) findViewById(R.id.btnIrRegisterActivity);
+        btnLogIn = findViewById(R.id.btnLogIn);
+        btnIrRegisterActivity = findViewById(R.id.btnIrRegisterActivity);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -75,9 +75,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        signInButton = (SignInButton) findViewById(R.id.signInButton);
+        signInButton = findViewById(R.id.signInButton);
         signInButton.setSize(SignInButton.SIZE_WIDE);
-        signInButton.setColorScheme(SignInButton.COLOR_DARK);
+        signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             };
 
         callbackManager = CallbackManager.Factory.create();
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton =  findViewById(R.id.login_button);
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -130,8 +130,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });*/
 
-        lEditEmail = (EditText) findViewById(R.id.lEditEmail);
-        lEditPassword = (EditText) findViewById(R.id.lEditPassword);
+        lEditEmail = findViewById(R.id.lEditEmail);
+        lEditPassword = findViewById(R.id.lEditPassword);
 
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override

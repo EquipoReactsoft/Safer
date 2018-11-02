@@ -81,98 +81,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        navigationView = (NavigationView) findViewById(R.id.menu);
+        navigationView = findViewById(R.id.menu);
         View header = navigationView.getHeaderView(0);
-        nombreHView = (TextView) header.findViewById(R.id.nametextView);
-        photoHView = (ImageView) header.findViewById(R.id.photoProfile);
-        correoTextHView = (TextView) header.findViewById(R.id.correotextView);
-        idTextHView = (TextView) header.findViewById(R.id.idView);
+        nombreHView = header.findViewById(R.id.nametextView);
+        photoHView = header.findViewById(R.id.photoProfile);
+        correoTextHView = header.findViewById(R.id.correotextView);
+        idTextHView = header.findViewById(R.id.idView);
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerActivity_main);
-        navigationView = (NavigationView) findViewById(R.id.menu);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerLayout = findViewById(R.id.drawerActivity_main);
+        navigationView = findViewById(R.id.menu);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        photoImageView = (ImageView) findViewById(R.id.photoImageView);
-        nameTextView = (TextView) findViewById(R.id.nameTextView);
-        emailTextView = (TextView) findViewById(R.id.emailTextView);
-        idTextView = (TextView) findViewById(R.id.idTextView);
-        btnLogOut = (Button) findViewById(R.id.btnLogOut);
-        btnRevoke = (Button) findViewById(R.id.btnRevoke);
-
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        if (item.isChecked()) {
-                            item.setChecked(false);
-                        } else {
-                            item.setChecked(true);
-
-                        }
-
-                        FragmentManager fragmentManager = getFragmentManager();
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-                        switch (item.getItemId()) {
-                            case R.id.MiUbicacion:
-                                //UbicacionFragment ubicacionFragment = new UbicacionFragment();
-                                //transaction.replace(R.id.fragment, ubicacionFragment);
-                                //transaction.commit();
-                                //setFragment(0);
-
-                                break;
-                            case R.id.BuscarUbicacion:
-                                PruebaFragment pfsss = new PruebaFragment();
-                                //transaction.remove(R.id.fragment, pfsss);
-                                //transaction.commit();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new PruebaFragment()).commit();
-                                break;
-                                /*ObtenerAutosFragment obtenerAutosFragment = new ObtenerAutosFragment();
-                                transaction.replace(R.id.fragment, obtenerAutosFragment);
-                                transaction.commit();
-                                break;*/
-                            case R.id.BuscarParadero:
-
-                                Toast.makeText(getApplicationContext(), "Buscar Paredero", Toast.LENGTH_LONG).show();
-                                /*ImagenesFragment ordenar = new ImagenesFragment();
-                                transaction.replace(R.id.fragment, ordenar);
-                                transaction.commit();*/
-                                break;
-                            //setFragment(2);
-                            case R.id.Cerrar_Sesion:
-
-                                /*firebaseAuth.signOut();
-                                Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-                                    @Override
-                                    public void onResult(@NonNull Status status) {
-                                        if (status.isSuccess()) {
-                                            goLogInScreenGoogle();
-
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "No se pudo WTHA", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                                FirebaseAuth.getInstance().signOut();
-                                LoginManager.getInstance().logOut();
-                                goLoginScreenFacebook();
-                                firebaseAuth.removeAuthStateListener(firebaseAuthListener);
-                                transaction.commit();
-                                //setFragment(3);
-                                */
-                                break;
-
-                        }
-
-                        drawerLayout.closeDrawers();
-
-                        return false;
-                    }
-                });
+        photoImageView = findViewById(R.id.photoImageView);
+        nameTextView =  findViewById(R.id.nameTextView);
+        emailTextView = findViewById(R.id.emailTextView);
+        idTextView = findViewById(R.id.idTextView);
+        btnLogOut = findViewById(R.id.btnLogOut);
+        btnRevoke = findViewById(R.id.btnRevoke);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -264,9 +193,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 }
                             }
 
-                            if(exist == true){
-
-                            }else{
+                            if (exist != true) {
                                 Usuarios usuario = new Usuarios();
                                 usuario.setCorreo(user.getEmail());
                                 usuario.setPassword(user.getUid());
@@ -299,9 +226,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         final DatabaseReference usuariosRef = database.getReference().getRef();
                         usuariosRef.child("Usuarios").push().setValue(usuario);
                     }*/
-                } else {
-                    //goLogInScreen();
                 }
+//                else {
+//                    //goLogInScreen();
+//                }
             }
         };
 
@@ -313,9 +241,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         };
 
-        if (AccessToken.getCurrentAccessToken() == null) {
-            //goLoginScreen();
-        } else {
+//        if (AccessToken.getCurrentAccessToken() == null) {
+//            //goLoginScreen();
+//        }
+        if (AccessToken.getCurrentAccessToken() != null) {
             requestEmail(AccessToken.getCurrentAccessToken());
 
             Profile profile = Profile.getCurrentProfile();

@@ -30,16 +30,16 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        txtCorreo = (EditText) findViewById(R.id.txtCorreo);
-        txtPassword = (EditText) findViewById(R.id.txtPassword);
+        txtCorreo = findViewById(R.id.txtCorreo);
+        txtPassword =  findViewById(R.id.txtPassword);
 
         auth = FirebaseAuth.getInstance();
-        AgregarBtnU = (Button) findViewById(R.id.btnAgregarU);
+        AgregarBtnU = findViewById(R.id.btnAgregarU);
 
         AgregarBtnU.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String userCorreo = txtCorreo.getText().toString();
+                final String userCorreo = txtCorreo.getText().toString().toLowerCase();
                 final String userPassword = txtPassword.getText().toString();
 
                 if(TextUtils.isEmpty(userCorreo)){
@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void AgregarUsuario(){
-        String userU = txtCorreo.getText().toString();
+        String userU = txtCorreo.getText().toString().toLowerCase();
         String passU = txtPassword.getText().toString();
 
         Usuarios usuario = new Usuarios();
