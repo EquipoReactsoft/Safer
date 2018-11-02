@@ -4,8 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.RegisterActivity"
+    tools:context=".RegisterActivity"
     android:orientation="vertical">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/lTextNameComplete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" >
+        <EditText
+            android:id="@+id/txtNameComplete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Ingrese Nombre Completo"
+            android:inputType="textPersonName"
+            android:theme="@style/EditTextTheme"/>
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/lTextCorreo"
@@ -18,7 +34,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Ingrese Correo"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:theme="@style/EditTextTheme"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -32,14 +49,25 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Ingrese Contraseña"
-            android:inputType="textPersonName" />
+            android:inputType="textPassword"
+            android:theme="@style/EditTextTheme"/>
     </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnIrConditions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:background="@null"
+        android:text="@string/conditionText"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary" />
 
     <Button
         android:id="@+id/btnAgregarU"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Agregar Usuario" />
-
-
+        android:text="Agregar Usuario"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorSecondary"/>
 </LinearLayout>

@@ -18,10 +18,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <permission
         android:name="com.vallabh.googlemapspractice.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
+
     <application
         android:name=".SaferApp"
         android:allowBackup="true"
@@ -41,18 +41,13 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".SettingActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -68,10 +63,14 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_map" >
+            android:label="@string/title_activity_map"></activity>
+        <activity android:name=".ConditionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

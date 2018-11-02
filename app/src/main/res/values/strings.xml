@@ -15,8 +15,9 @@
     <string name="register">Registrarte</string>
     <string name="hint_address">Dirección</string>
     <string name="link_register">No tienes cuenta? Registrate aqui!</string>
+    <string name="term_condi">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry</string>
     <string name="action_singOut">Cerrar sesion</string>
-    <string name="conditionText">Al registrarme estoy de acuerdo con los Terminos, Condiciones y Politicas de Privacidad de SAFER</string>
+    <string name="conditionText">Terminos y Condiciones</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
 

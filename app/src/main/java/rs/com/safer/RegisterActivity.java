@@ -23,7 +23,7 @@ import rs.com.safer.Models.Usuarios;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText txtCorreo, txtPassword;
-    Button AgregarBtnU;
+    Button AgregarBtnU, IrTermCondition;
     FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         AgregarBtnU = (Button) findViewById(R.id.btnAgregarU);
+        IrTermCondition = (Button) findViewById(R.id.btnIrConditions);
 
         AgregarBtnU.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +71,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
 
+            }
+        });
+
+        IrTermCondition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(RegisterActivity.this, ConditionActivity.class);
+                startActivity(i);
             }
         });
 
