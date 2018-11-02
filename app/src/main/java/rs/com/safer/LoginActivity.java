@@ -1,9 +1,9 @@
 package rs.com.safer;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -32,8 +32,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     /*------------------Google----------------------*/
@@ -157,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     if (!task.isSuccessful()) {
                                         Toast.makeText(LoginActivity.this, "Error al Ingresa, Digite Correctamente sus Datos", Toast.LENGTH_LONG).show();
                                     } else {
-                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                        Intent i = new Intent(LoginActivity.this, MenuActivity.class);
                                         startActivity(i);
                                         finish();
                                     }

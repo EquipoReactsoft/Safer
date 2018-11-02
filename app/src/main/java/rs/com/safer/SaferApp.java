@@ -2,7 +2,6 @@ package rs.com.safer;
 
 import android.app.Application;
 
-import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
 public class SaferApp extends Application {

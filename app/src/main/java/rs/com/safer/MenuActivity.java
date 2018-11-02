@@ -9,25 +9,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Base64;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +56,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -103,24 +100,22 @@ public class MenuActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView = findViewById(R.id.nav_view);
         mHeaderView =  mNavigationView.getHeaderView(0);
 
-        photoUserMenu = (ImageView)  mHeaderView.findViewById(R.id.imageMenu);
-        nameUserMenu = (TextView) mHeaderView.findViewById(R.id.userMenu);
-        descUserMenu = (TextView) mHeaderView.findViewById(R.id.descMenu);
+        photoUserMenu = mHeaderView.findViewById(R.id.imageMenu);
+        nameUserMenu = mHeaderView.findViewById(R.id.userMenu);
+        descUserMenu = mHeaderView.findViewById(R.id.descMenu);
 
-        mImageView = (ImageView) findViewById(R.id.imageView2);
+        mImageView = findViewById(R.id.imageView2);
         mProgressDialog1 = new ProgressDialog(this);
 
 
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Upload");
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
         //region InitializeGmailAuth
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -133,7 +128,6 @@ public class MenuActivity extends AppCompatActivity
             }
         };
         //endregion InitializeGmailAuth
-
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -180,21 +174,6 @@ public class MenuActivity extends AppCompatActivity
                         }
 
                     });
-
-                    /*boolean b = Verific(user);
-                    if(b == true){
-
-                    }else{
-                        Usuarios usuario = new Usuarios();
-                        usuario.setCorreo(user.getEmail());
-                        usuario.setPassword(user.getUid());
-                        usuario.setLatitud(0);
-                        usuario.setLongitud(0);
-
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference usuariosRef = database.getReference().getRef();
-                        usuariosRef.child("Usuarios").push().setValue(usuario);
-                    }*/
                 } else {
                     //goLogInScreen();
                 }
@@ -283,17 +262,15 @@ public class MenuActivity extends AppCompatActivity
         Fragment fragment = null;
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_report) {
             fragment = new ReportFragment();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_comunity) {
             fragment = new PruebaFragment();
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_information) {
             fragment = new UbicacionFragment();
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_contact) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_web) {
 
         }
 
@@ -336,7 +313,11 @@ public class MenuActivity extends AppCompatActivity
     private void setUserData(FirebaseUser user) {
         nameUserMenu.setText(user.getDisplayName());
         descUserMenu.setText(user.getEmail());
-        Glide.with(this).load(user.getPhotoUrl()).into(photoUserMenu);
+        if (user.getPhotoUrl() == null || user.getPhotoUrl() == Uri.EMPTY) {
+            Glide.with(this).load(R.drawable.profile_user).into(photoUserMenu);
+        } else {
+            Glide.with(this).load(user.getPhotoUrl()).into(photoUserMenu);
+        }
     }
 
     private void displayProfileInfo(Profile profile) {
