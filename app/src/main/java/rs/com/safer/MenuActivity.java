@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -89,12 +90,14 @@ public class MenuActivity extends AppCompatActivity
     private ProgressDialog mProgressDialog1;
 
     private static final int TAKE_PHOTO_REQUEST = 1;
-    private ImageView mImageView;
     String mCurrentPhotoPath;
     private File photoFile;
 
     private UploadTask uploadTask;
     Boolean exist;
+
+    private UbicacionFragment mMapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +113,6 @@ public class MenuActivity extends AppCompatActivity
         nameUserMenu = mHeaderView.findViewById(R.id.userMenu);
         descUserMenu = mHeaderView.findViewById(R.id.descMenu);
 
-        mImageView = findViewById(R.id.imageView2);
         mProgressDialog1 = new ProgressDialog(this);
 
 
@@ -204,7 +206,7 @@ public class MenuActivity extends AppCompatActivity
         //endregion
 
         //region flotaingButton
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,21 +217,20 @@ public class MenuActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         //endregion flotatingButton
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -251,7 +252,6 @@ public class MenuActivity extends AppCompatActivity
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -267,7 +267,10 @@ public class MenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_comunity) {
             fragment = new PruebaFragment();
         } else if (id == R.id.nav_information) {
-            fragment = new UbicacionFragment();
+            mMapFragment = new UbicacionFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, mMapFragment);
+            ft.commit();
         } else if (id == R.id.nav_contact) {
 
         } else if (id == R.id.nav_web) {
@@ -280,14 +283,13 @@ public class MenuActivity extends AppCompatActivity
             ft.commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -357,25 +359,6 @@ public class MenuActivity extends AppCompatActivity
         request.executeAsync();
     }
 
-    private void startCamera() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, CAMERA_REQUEST);
-            }
-        } else {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, CAMERA_REQUEST);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        startCamera();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -400,12 +383,18 @@ public class MenuActivity extends AppCompatActivity
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inPurgeable = true;
 
-            //stream = getContentResolver().openInputStream(data.getData());
+            //Intent intent = new Intent (this, ReportFragment.class);
+            //intent.putExtra("photo_file_key", photoFile);
+
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(),bmOptions);
-            mImageView.setImageBitmap(bitmap);
-
-            encodeBitmapAndSaveToFirebase(bitmap);
-
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("photo_bitmap_key", bitmap);
+            bundle.putSerializable("photo_file_key", photoFile);
+            Fragment fragment = new ReportFragment();
+            fragment.setArguments(bundle);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
         }
     }
 
@@ -461,12 +450,12 @@ public class MenuActivity extends AppCompatActivity
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                Toast.makeText(getApplicationContext(), "Reporte fake", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "¡No se pudo Reportar, vuelva intentarlo!", Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getApplicationContext(), "Reportado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "¡Se Reportó con exito!", Toast.LENGTH_SHORT).show();
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
             }
@@ -480,15 +469,20 @@ public class MenuActivity extends AppCompatActivity
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getApplicationContext(), "FAIL FAIL FAIL FAIL FAIL", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No se puedo guardar la foto en el servidor", Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
+    private void placeMarkerInMap(String title, double lat, double lon) {
+        if (mMapFragment != null) {
+            mMapFragment.placeMarker(title, lat, lon);
+        }
+    }
 }

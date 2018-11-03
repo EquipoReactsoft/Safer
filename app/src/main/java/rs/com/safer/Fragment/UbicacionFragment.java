@@ -24,8 +24,10 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -84,12 +86,6 @@ public class UbicacionFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -100,21 +96,33 @@ public class UbicacionFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapView = (MapView) mView.findViewById(R.id.map);
+        //mMapView = (MapView) mView.findViewById(R.id.map);
+        SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        fragment.getMapAsync(UbicacionFragment.this);
 
-        if (mMapView != null) {
-            mMapView.onCreate(null);
-            mMapView.onResume();
-            mMapView.getMapAsync(this);
+
+//        if (mMapView != null) {
+//            mMapView.onCreate(null);
+//            mMapView.onResume();
+//            mMapView.getMapAsync(this);
+//        }
+
+
+    }
+
+    public void placeMarker(String title, double lat, double lon) {
+        if (mMap != null) {
+            LatLng marker = new LatLng(lat, lon);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
+            mMap.addMarker(new MarkerOptions().title(title).position(marker));
         }
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
 
-        miUbicacion();
+        //miUbicacion();
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
@@ -135,9 +143,10 @@ public class UbicacionFragment extends Fragment implements OnMapReadyCallback {
         if (marcador != null) {
             marcador.remove();
         }
-//        marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual")
-//                .icon(bitmapDescriptorFromVector(UbicacionFragment.this.getContext(), R.drawable.ic_home)));
-        marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual"));
+
+        marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual")
+                .icon(bitmapDescriptorFromVector(UbicacionFragment.this.getContext(), R.drawable.ic_home)));
+        //marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual").snippet("Snippet"));
         mMap.animateCamera(miUbicacion);
     }
 

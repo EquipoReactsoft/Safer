@@ -73,4 +73,6 @@
     <string name="put_email">Ingrese Correo</string>
     <string name="put_password">Ingrese Contraseña</string>
     <string name="add_user_text_button">Agregar Usuario</string>
+    <string name="connect_internet_access_exception">Por favor asegurece que este conectado a internet</string>
+    <string name="connect_internet_exception">No se pudo conectar internet</string>
 </resources>

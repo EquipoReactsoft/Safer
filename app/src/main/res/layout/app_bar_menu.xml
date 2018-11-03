@@ -31,10 +31,4 @@
         app:backgroundTint="@color/colorPrimary"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@color/btn_send_pressed" />
-
 </android.support.design.widget.CoordinatorLayout>

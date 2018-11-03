@@ -56,9 +56,9 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_map"></activity>
-        <activity android:name=".ConditionActivity">
-        </activity>
+            android:label="@string/title_activity_map"/>
+        <activity android:name=".ConditionActivity"
+            android:theme="@style/AppTheme.Presentation"/>
     </application>
 
 </manifest>
