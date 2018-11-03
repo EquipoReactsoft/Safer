@@ -45,5 +45,6 @@ dependencies {
     //DEPENDENCIAS EXTERNAS PARA EL ESTE PROYECTO
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'me.biubiubiu.justifytext:library:1.1'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -32,18 +32,22 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme.Presentation" />
-        <activity
-            android:name=".SplashActivity"
             android:theme="@style/AppTheme.Presentation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/AppTheme.Presentation">
+
+        </activity>
         <activity android:name=".RegisterActivity"
             android:label="Registrar"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme">
+
+        </activity>
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu"
@@ -57,7 +61,10 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_map"></activity>
-        <activity android:name=".ConditionActivity">
+
+        <activity android:name=".ConditionActivity"
+            android:theme="@style/AppTheme.Presentation">
+
         </activity>
     </application>
 

@@ -53,15 +53,24 @@
             android:theme="@style/EditTextTheme"/>
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/btnIrConditions"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:background="@null"
-        android:text="@string/conditionText"
-        android:textAllCaps="false"
-        android:textColor="@color/colorPrimary" />
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btnIrConditions2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="150dp"
+            android:background="@null"
+            android:text="@string/conditionText"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btnAgregarU"
