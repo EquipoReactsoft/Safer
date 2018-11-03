@@ -33,15 +33,15 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.Presentation">
-
-        </activity>
-        <activity
-            android:name=".SplashActivity"
-            android:theme="@style/AppTheme.Presentation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/AppTheme.Presentation">
+
         </activity>
         <activity android:name=".RegisterActivity"
             android:label="Registrar"
@@ -60,10 +60,18 @@
 
         <activity
             android:name=".MapsActivity"
+<<<<<<< HEAD
             android:label="@string/title_activity_map"/>
-
         <activity android:name=".ConditionActivity"
             android:theme="@style/AppTheme.Presentation"/>
+=======
+            android:label="@string/title_activity_map"></activity>
+
+        <activity android:name=".ConditionActivity"
+            android:theme="@style/AppTheme.Presentation">
+
+        </activity>
+>>>>>>> 6bd92d5e7009af3e27f904f290a36a51af9dfb65
     </application>
 
 </manifest>

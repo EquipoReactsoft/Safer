@@ -1,10 +1,13 @@
 package rs.com.safer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,13 +20,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.nio.file.Files;
+
 import rs.com.safer.Models.Usuarios;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText txtCorreo, txtPassword;
+    EditText txtCorreo, txtPassword, txtNameComplete;
     Button AgregarBtnU, IrTermCondition;
     FirebaseAuth auth;
+    Boolean correo, password, nameComplete;
+    String c_nombre,c_correo,c_password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +38,109 @@ public class RegisterActivity extends AppCompatActivity {
 
         txtCorreo = findViewById(R.id.txtCorreo);
         txtPassword =  findViewById(R.id.txtPassword);
+        txtNameComplete = findViewById(R.id.txtNameComplete);
+        correo=false;
+        password=false;
+        nameComplete=false;
+
+        AgregarBtnU = findViewById(R.id.btnAgregarU);
+        AgregarBtnU.setEnabled(false);
+        AgregarBtnU.setBackgroundResource(R.color.colorDisablePrimary);
+
+        IrTermCondition = findViewById(R.id.btnIrConditions2);
+        IrTermCondition.setEnabled(false);
+        IrTermCondition.setTextColor(getResources().getColor(R.color.colorDisablePrimary));
+
+        txtNameComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() >= 1) {
+                    correo=true;
+                }else{
+                    correo=false;
+                }
+
+                if(correo==true && password==true && nameComplete==true){
+                    IrTermCondition.setEnabled(true);
+                    IrTermCondition.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }else{
+                    IrTermCondition.setEnabled(false);
+                    IrTermCondition.setTextColor(getResources().getColor(R.color.colorDisablePrimary));
+                }
+            }
+        });
+
+        txtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() >= 6) {
+                    password=true;
+                }else{
+                    password=false;
+                }
+
+                if(correo==true && password==true && nameComplete==true){
+                    IrTermCondition.setEnabled(true);
+                    IrTermCondition.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }else{
+                    IrTermCondition.setEnabled(false);
+                    IrTermCondition.setTextColor(getResources().getColor(R.color.colorDisablePrimary));
+                }
+            }
+        });
+
+        txtNameComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() >= 1) {
+                    nameComplete=true;
+                }else{
+                    nameComplete=false;
+                }
+
+                if(correo==true && password==true && nameComplete==true){
+                    IrTermCondition.setEnabled(true);
+                    IrTermCondition.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }else{
+                    IrTermCondition.setEnabled(false);
+                    IrTermCondition.setTextColor(getResources().getColor(R.color.colorDisablePrimary));
+                }
+            }
+        });
+
+
 
         auth = FirebaseAuth.getInstance();
-        AgregarBtnU = findViewById(R.id.btnAgregarU);
-        IrTermCondition = (Button) findViewById(R.id.btnIrConditions);
 
         AgregarBtnU.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,11 +179,46 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        Boolean yourBool = getIntent().getExtras().getBoolean("btnTrue");
+
+        if(yourBool == true){
+
+            c_nombre = getIntent().getExtras().getString("c_nombre");
+            c_correo = getIntent().getExtras().getString("c_correo");
+            c_password = getIntent().getExtras().getString("c_password");
+            if(!c_nombre.equals("") && !c_correo.equals("") && !c_password.equals("")){
+                txtNameComplete.setText(c_nombre);
+                txtCorreo.setText(c_correo);
+                txtPassword.setText(c_password);
+                AgregarBtnU.setBackgroundResource(R.color.colorPrimary);
+                AgregarBtnU.setEnabled(true);
+            }else{
+                txtNameComplete.setText("");
+                txtCorreo.setText("");
+                txtPassword.setText("");
+                AgregarBtnU.setBackgroundResource(R.color.colorDisablePrimary);
+                AgregarBtnU.setEnabled(false);
+            }
+
+        }
+
         IrTermCondition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(RegisterActivity.this, ConditionActivity.class);
+                //String a=txtNameComplete.getText().toString();
+                //Bundle bundle = new Bundle();
+                //bundle.putString("latitude", latitude);
+                //bundle.putString("longitude", longitude);
+                //bundle.putString("board_id", board_id);
+
+                    i.putExtra("nombre", txtNameComplete.getText().toString());
+                    i.putExtra("correo", txtCorreo.getText().toString());
+                    i.putExtra("password", txtPassword.getText().toString());
+                    RegisterActivity sd= new RegisterActivity();
+
                 startActivity(i);
+                //finish();
             }
         });
 
@@ -99,11 +240,19 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+        i.putExtra("btnTrue", true);
+        startActivity(i);
+        this.finish();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         //auth.signOut();
-        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(i);
+        //Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+        //startActivity(i);
     }
 
 

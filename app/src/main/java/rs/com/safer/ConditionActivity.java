@@ -14,11 +14,18 @@ public class ConditionActivity extends AppCompatActivity {
 
     Button btnIrRegister;
     TextView info_text;
+    String nombre,correo,password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_condition);
         TextView ifText = (TextView) findViewById(R.id.info_text);
+
+        Bundle bundle = getIntent().getExtras();
+
+        nombre = getIntent().getExtras().getString("nombre");
+        correo = getIntent().getExtras().getString("correo");
+        password = getIntent().getExtras().getString("password");
         // ifText.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         try {
             Resources res = getResources(); InputStream in_s = res.openRawResource(R.raw.term);
@@ -34,9 +41,16 @@ public class ConditionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ConditionActivity.this, RegisterActivity.class);
+                i.putExtra("btnTrue", true);
+                    i.putExtra("c_nombre", nombre);
+                    i.putExtra("c_correo", correo);
+                    i.putExtra("c_password", password);
                 startActivity(i);
+                //finish();
             }
         });
 
     }
+
+
 }
