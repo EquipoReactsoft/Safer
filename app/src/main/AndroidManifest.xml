@@ -9,9 +9,12 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.hardware.location.gps"/>
+    <uses-feature android:name="android.hardware.location.gps"/>
 
     <permission
         android:name="com.vallabh.googlemapspractice.permission.MAPS_RECEIVE"
@@ -29,29 +32,35 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme.Presentation">
-
-        </activity>
+            android:theme="@style/AppTheme.Presentation"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.Presentation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity"
+        <activity
+            android:name=".RegisterActivity"
             android:label="Registrar"
-            android:theme="@style/AppTheme">
-
-        </activity>
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu"
-            android:theme="@style/AppTheme.Presentation" />
+            android:theme="@style/AppTheme.Presentation"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity android:name=".SettingActivity" />
 
         <meta-data
@@ -60,10 +69,14 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_map"/>
-
-        <activity android:name=".ConditionActivity"
-            android:theme="@style/AppTheme.Presentation"/>
+            android:label="@string/title_activity_map"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ConditionActivity"
+            android:theme="@style/AppTheme.Presentation"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

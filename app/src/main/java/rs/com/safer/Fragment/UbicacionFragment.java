@@ -96,16 +96,16 @@ public class UbicacionFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //mMapView = (MapView) mView.findViewById(R.id.map);
-        SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        fragment.getMapAsync(UbicacionFragment.this);
+        mMapView = (MapView) mView.findViewById(R.id.map);
+        //SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        //fragment.getMapAsync(this);
 
 
-//        if (mMapView != null) {
-//            mMapView.onCreate(null);
-//            mMapView.onResume();
-//            mMapView.getMapAsync(this);
-//        }
+        if (mMapView != null) {
+            mMapView.onCreate(null);
+            mMapView.onResume();
+            mMapView.getMapAsync(this);
+        }
 
 
     }

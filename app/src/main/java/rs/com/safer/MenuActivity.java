@@ -1,5 +1,6 @@
 package rs.com.safer;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -61,8 +62,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.PruebaFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
+import rs.com.safer.Fragment.WebFragment;
 import rs.com.safer.Models.Usuarios;
 
 public class MenuActivity extends AppCompatActivity
@@ -262,17 +265,32 @@ public class MenuActivity extends AppCompatActivity
         Fragment fragment = null;
         int id = item.getItemId();
 
+        FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+
         if (id == R.id.nav_report) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_comunity) {
-            fragment = new PruebaFragment();
+            //fragment = new PruebaFragment();
+            Intent i = new Intent(MenuActivity.this, MapsActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_information) {
-            mMapFragment = new UbicacionFragment();
+           /* mMapFragment = new UbicacionFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, mMapFragment);
-            ft.commit();
+            ft.commit();*/
+           fragment = new WebFragment();
         } else if (id == R.id.nav_contact) {
-
+            /*mMapFragment = new UbicacionFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, mMapFragment);
+            ft.commit();*/
+            fragment = new LocationFragment();
+            /*LocationFragment lf = new LocationFragment();
+            transaction.replace(R.id.fragment, lf);
+            transaction.commit();
+*/
         } else if (id == R.id.nav_web) {
 
         }

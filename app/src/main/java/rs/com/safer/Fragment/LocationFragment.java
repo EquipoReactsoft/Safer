@@ -1,27 +1,30 @@
-package rs.com.safer;
+package rs.com.safer.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
+import android.os.StrictMode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.Fragment;
+//import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -29,87 +32,33 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import rs.com.safer.R;
 
+
+public class LocationFragment extends Fragment implements OnMapReadyCallback {
+/*
+    MapView mMapView;
+    double lat = 0.0;
+    double log = 0.0;
+    View mView;
+*/
     double lat = 0.0;
     double log = 0.0;
 
-    private GoogleMap mMap;
+    //private GoogleMap mMap;
     private Marker marcador;
-
+    View mView;
     LocationManager mLocationManager;
 
     boolean canGetLocation = true;
 
     Location location;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        miUbicacion();
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
-        Drawable background = ContextCompat.getDrawable(context, vectorDrawableResourceId);
-        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
-        vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40, vectorDrawable.getIntrinsicHeight() + 20);
-        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        background.draw(canvas);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-    private void agregarMarcador(double lat, double log) {
-        LatLng coordenadas = new LatLng(lat, log);
-        CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 16);
-        if (marcador != null) {
-            marcador.remove();
-        }
-        marcador = mMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual")
-                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_home)));
-        mMap.animateCamera(miUbicacion);
-    }
-
-    private void actualizarUbicacion(Location location) {
-        if (location != null) {
-            lat = location.getLatitude();
-            log = location.getLongitude();
-            agregarMarcador(lat, log);
-        }
-    }
+    MapView mMapView;
 
     LocationListener locListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            actualizarUbicacion(location);
+
         }
 
         @Override
@@ -128,16 +77,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    private GoogleMap mGoogleMap;
+
+    public LocationFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        mView = inflater.inflate(R.layout.fragment_ubicacion, container, false);
+        return mView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mMapView = (MapView) mView.findViewById(R.id.map);
+
+        if (mMapView != null) {
+            mMapView.onCreate(null);
+            mMapView.onResume();
+            mMapView.getMapAsync(this);
+        }
+        //mView = view.inflate(R.layout.fragment_ubicacion, this, false);
+        //return mView;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+
+        miUbicacion();
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    }
+
+    private void agregarMarcador(double lat, double log) {
+        LatLng coordenadas = new LatLng(lat, log);
+        CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 16);
+        if (marcador != null) {
+            marcador.remove();
+        }
+        marcador = mGoogleMap.addMarker(new MarkerOptions().position(coordenadas).title("Mi Posiciòn Actual"));
+        mGoogleMap.animateCamera(miUbicacion);
+    }
+
+    private void actualizarUbicacion(Location location) {
+        if (location != null) {
+            lat = location.getLatitude();
+            log = location.getLongitude();
+            agregarMarcador(lat, log);
+        }
+    }
+
     private void miUbicacion() {
-        LocationManager locationManager = (LocationManager)  getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //return;
         }
         Location location;
 
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER/*Manifest.permission.ACCESS_FINE_LOCATION*/);
+        //requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION) //LocationManager.PASSIVE_PROVIDER
         if (location == null) {
             location = getLastKnownLocation();
         }
@@ -153,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private Location getLastKnownLocation() {
-        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
@@ -174,8 +180,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int MIN_TIME_BW_UPDATES = 10000;
         int MIN_DISTANCE_CHANGE_FOR_UPDATES = 10000;
         try {
-            mLocationManager = (LocationManager) getApplicationContext()
-                    .getSystemService(LOCATION_SERVICE);
+            mLocationManager = (LocationManager) getActivity().getApplicationContext()
+                    .getSystemService(Context.LOCATION_SERVICE);
 
             boolean isGPSEnabled = mLocationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
