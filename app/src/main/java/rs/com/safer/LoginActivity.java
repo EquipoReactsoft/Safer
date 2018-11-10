@@ -92,7 +92,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user != null) {
-                       goMainScreen();
+
+                       //consultar a la tb usuario y traer data de acuerdo a email user.getEmail();
+                        ///if ()_
+                        goMainScreen();
                     }
                 }
             };
@@ -155,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     if (!task.isSuccessful()) {
                                         Toast.makeText(LoginActivity.this, "Error al Ingresa, Digite Correctamente sus Datos", Toast.LENGTH_LONG).show();
                                     } else {
-                                        Intent i = new Intent(LoginActivity.this, MenuActivity.class);
+                                        Intent i = new Intent(LoginActivity.this, TipoDireccionActivity.class);
                                         startActivity(i);
                                         finish();
                                     }
@@ -168,7 +171,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnIrRegisterActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                Intent i = new Intent(LoginActivity.this, TipoDireccionActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -243,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainScreen() {
-        Intent intent = new Intent(this, MenuActivity.class);
+        Intent intent = new Intent(this, TipoDireccionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

@@ -101,6 +101,9 @@ public class MenuActivity extends AppCompatActivity
 
     private UbicacionFragment mMapFragment;
 
+    double lat = 0.0;
+    double log = 0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,11 +165,13 @@ public class MenuActivity extends AppCompatActivity
                             if(exist == true){
 
                             }else{
+                                lat = getIntent().getDoubleExtra("lat", 0.0);
+                                log = getIntent().getDoubleExtra("log", 0.0);
                                 Usuarios usuario = new Usuarios();
                                     usuario.setCorreo(user.getEmail());
                                     usuario.setPassword(user.getUid());
-                                    usuario.setLatitud(0.0);
-                                    usuario.setLongitud(0.0);
+                                    usuario.setLatitud(lat);
+                                    usuario.setLongitud(log);
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference usuariosRef = database.getReference().getRef();
@@ -265,8 +270,8 @@ public class MenuActivity extends AppCompatActivity
         Fragment fragment = null;
         int id = item.getItemId();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //FragmentManager fragmentManager = getFragmentManager();
+        //android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
 
 
         if (id == R.id.nav_report) {
@@ -289,8 +294,7 @@ public class MenuActivity extends AppCompatActivity
             fragment = new LocationFragment();
             /*LocationFragment lf = new LocationFragment();
             transaction.replace(R.id.fragment, lf);
-            transaction.commit();
-*/
+            transaction.commit();*/
         } else if (id == R.id.nav_web) {
 
         }
