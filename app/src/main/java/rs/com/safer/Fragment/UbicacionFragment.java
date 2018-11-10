@@ -279,6 +279,4 @@ public class UbicacionFragment extends Fragment implements OnMapReadyCallback {
         return location;
     }
 
-
-
 }

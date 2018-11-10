@@ -6,22 +6,58 @@
     tools:context=".ReportFragment">
 
 
-    <ImageView
-        android:id="@+id/photo_upload_reporte"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="199dp"
+        android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="20dp"
-        android:src="?attr/actionModeSplitBackground" >
+        android:orientation="vertical">
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/imageButton"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_menu_camera" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="199dp"
+            android:background="#88E288"
+            android:orientation="vertical">
 
-    </ImageView>
+            <ImageView
+                android:id="@+id/photo_upload_reporte"
+                android:layout_width="match_parent"
+                android:src="@drawable/photo_take"
+                android:layout_height="match_parent">
+            </ImageView>
+        </LinearLayout>
 
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="126dp"
+            android:layout_margin="20dp"
+            android:background="#ffffff"
+            android:ems="22"
+            android:inputType="textMultiLine"
+            android:textColor="#8f8e8e"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:theme="@style/EditTextTheme" />
+
+        <Button
+            android:id="@+id/button_reporter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorSecondary"
+            android:layout_marginBottom="15dp"
+            android:text="@string/reporter_button" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="88dp"
+        android:layout_height="98dp"
+        android:indeterminateTint="@color/colorPrimaryDark"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone" />
 
 </FrameLayout>
