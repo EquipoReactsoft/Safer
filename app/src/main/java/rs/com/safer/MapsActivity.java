@@ -12,13 +12,17 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,10 +33,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import rs.com.safer.Models.Usuarios;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback ,GoogleApiClient.OnConnectionFailedListener{
 
     double lat = 0.0;
     double log = 0.0;
@@ -46,6 +59,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     Location location;
     Button btnCheckLocation;
+    Boolean exist;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    DatabaseReference rootRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,14 +73,93 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                    rootRef = FirebaseDatabase.getInstance().getReference();
+
+                    rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot datasnapshot) {
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            final DatabaseReference usuariosRef = database.getReference().getRef();
+                            Usuarios usuario = new Usuarios();
+try {
+
+                            if(datasnapshot.getChildren() == null){
+                                usuariosRef.child("Usuarios").push().setValue(usuario);
+                            }
+
+                            for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
+                                Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
+                                    if(urs.getCorreo().equals(user.getEmail())){
+                                        exist=true;
+                                        break;
+                                    }else{
+                                        exist=false;
+                                    }
+                            }
+
+                            if(!exist){
+
+                                //lat = getIntent().getDoubleExtra("lat", 0.0);
+                                //log = getIntent().getDoubleExtra("log", 0.0);
+
+                                usuario = new Usuarios();
+                                usuario.setCorreo(user.getEmail());
+                                usuario.setPassword(user.getUid());
+                                usuario.setLatitud(lat);
+                                usuario.setLongitud(log);
+
+                                usuariosRef.child("Usuarios").push().setValue(usuario);
+                            }
+
+                            Intent i = new Intent(MapsActivity.this, MenuActivity.class);
+                            startActivity(i);
+} catch (Exception e){
+    Usuarios usuarioc = new Usuarios();
+    usuarioc.setLongitud(0.0);
+    usuarioc.setLatitud(0.0);
+    usuarioc.setPassword("_");
+    usuarioc.setCorreo("@");
+    usuariosRef.child("Usuarios").push().setValue(usuarioc);
+//    rootRef = FirebaseDatabase.getInstance().getReference();
+}
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+
+                    });
+                }
+            }
+        };
+
         btnCheckLocation = findViewById(R.id.btnAceptar);
         btnCheckLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MapsActivity.this, MenuActivity.class);
-                       i.putExtra("lat", lat);
-                       i.putExtra("log", log);
-                startActivity(i);
+
+
+                /*firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+                    @Override
+                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        if (user != null) {
+                            //setUserData(user);
+                        }
+                    }
+                };*/
+
+                firebaseAuth.addAuthStateListener(firebaseAuthListener);
+
+
             }
         });
 
@@ -144,6 +241,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
     private void miUbicacion() {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         LocationManager locationManager = (LocationManager)  getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -151,7 +250,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Location location;
 
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         if (location == null) {
             location = getLastKnownLocation();
@@ -241,5 +340,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
         return location;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
     android:orientation="vertical">
 
     <Button
@@ -10,11 +11,12 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:text="@string/link_account"
+        android:textSize="25sp"
         android:textAllCaps="false"
         android:layout_marginTop="40dp"
         android:textAlignment="textStart"
         android:layout_gravity="start"
-        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:drawableLeft="@drawable/user_op"
         android:textColor="@color/colorPrimary" />
 
     <Button
@@ -23,10 +25,11 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:text="@string/link_notification"
+        android:textSize="25sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
-        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:drawableLeft="@drawable/notification_op"
         android:textColor="@color/colorPrimary" />
 
     <Button
@@ -35,10 +38,11 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:text="@string/link_Privacity"
+        android:textSize="25sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
-        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:drawableLeft="@drawable/privacy_op"
         android:textColor="@color/colorPrimary" />
 
     <Button
@@ -47,10 +51,11 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:text="@string/link_About"
+        android:textSize="25sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
-        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:drawableLeft="@drawable/information_op"
         android:textColor="@color/colorPrimary" />
 
     <Button
@@ -59,10 +64,11 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:text="@string/link_logout"
+        android:textSize="25sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
-        android:drawableLeft="@drawable/common_google_signin_btn_icon_dark_normal"
+        android:drawableLeft="@drawable/logout_op"
         android:textColor="@color/colorPrimary" />
 
 </LinearLayout>
