@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReportFragment">
+    tools:context=".Fragment.ReportFragment">
 
 
     <LinearLayout
@@ -32,24 +32,29 @@
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="126dp"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
             android:background="#ffffff"
             android:ems="22"
+            android:hint="Escribe un comentario.."
             android:inputType="textMultiLine"
+            android:maxEms="250"
             android:textColor="#8f8e8e"
             android:textSize="20sp"
-            android:layout_weight="1"
-            android:theme="@style/EditTextTheme" />
+            android:textStyle="italic"
+            android:theme="@style/EditTextTheme"
+            android:verticalScrollbarPosition="right" />
 
         <Button
             android:id="@+id/button_reporter"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:textColor="@color/colorSecondary"
-            android:layout_marginBottom="15dp"
-            android:text="@string/reporter_button" />
+            android:freezesText="true"
+            android:text="@string/reporter_button"
+            android:textColor="@color/colorSecondary" />
     </LinearLayout>
 
     <ProgressBar

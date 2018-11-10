@@ -93,8 +93,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, SIGN_IN_CODE);
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -105,9 +107,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user != null) {
-
-                       //consultar a la tb usuario y traer data de acuerdo a email user.getEmail();
-                        ///if ()_
                         goMainScreen();
                     }
                 }
@@ -135,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         loginButton.setReadPermissions("email");
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         //btnCs = (Button) findViewById(R.id.btnCS);
         /*btnCs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +162,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }else if(TextUtils.isEmpty(pass)){
                     Toast.makeText(getApplicationContext(), "NECESITA INGRESAR UNA CONTRASEÑA", Toast.LENGTH_LONG).show();
                 }else {
-
                     firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(LoginActivity.this,
                             new OnCompleteListener<AuthResult>() {
                                 @Override

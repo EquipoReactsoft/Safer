@@ -1,11 +1,11 @@
 package rs.com.safer;
 
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -66,18 +65,18 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import rs.com.safer.Fragment.LocationFragment;
-import rs.com.safer.Fragment.PruebaFragment;
+import rs.com.safer.Fragment.ReportFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
 import rs.com.safer.Fragment.WebFragment;
 import rs.com.safer.Models.Usuarios;
+import rs.com.safer.Utils.Permission;
 
 public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
+    //region DeclareVariable
     private ImageView photoUserMenu;
     private TextView nameUserMenu;
     private TextView descUserMenu;
@@ -112,6 +111,9 @@ public class MenuActivity extends AppCompatActivity
 
     double lat = 0.0;
     double log = 0.0;
+
+    public static final String PREFS_NAME = "MyPrefsFile";
+    //endregion DeclareVariable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,8 +153,8 @@ public class MenuActivity extends AppCompatActivity
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    saveInMemoryStorage(user);
                     setUserData(user);
-
                     DatabaseReference rootRef;
                     rootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -226,7 +228,7 @@ public class MenuActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PermissionStorage();
+                Permission.PermissionStorage(MenuActivity.this);
                 Snackbar.make(view, "Abriendo camara para reportar...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 //TODO modificar en un buen lugar
@@ -280,14 +282,9 @@ public class MenuActivity extends AppCompatActivity
         Fragment fragment = null;
         int id = item.getItemId();
 
-        //FragmentManager fragmentManager = getFragmentManager();
-        //android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-
         if (id == R.id.nav_report) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_comunity) {
-            //fragment = new PruebaFragment();
             Intent i = new Intent(MenuActivity.this, MapsActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_information) {
@@ -327,7 +324,7 @@ public class MenuActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        PermissionCamera();
+        Permission.PermissionCamera(this);
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
@@ -513,12 +510,6 @@ public class MenuActivity extends AppCompatActivity
 
     }
 
-    private void placeMarkerInMap(String title, double lat, double lon) {
-        if (mMapFragment != null) {
-            mMapFragment.placeMarker(title, lat, lon);
-        }
-    }
-
     public void PermissionStorage(){
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -536,6 +527,7 @@ public class MenuActivity extends AppCompatActivity
                 alert.show();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
+            Toast.makeText(getApplicationContext(), "Vuelve a intentarlo", Toast.LENGTH_LONG).show();
             //return false;
         }
         else {
@@ -565,5 +557,16 @@ public class MenuActivity extends AppCompatActivity
         else {
             //return true;
         }
+    }
+
+    private void saveInMemoryStorage(FirebaseUser firebaseUser ){
+        // We need an Editor object to make preference changes.
+        // All objects are from android.context.Context
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("user_email_local_storage", firebaseUser.getEmail());
+
+        // Commit the edits!
+        editor.commit();
     }
 }
