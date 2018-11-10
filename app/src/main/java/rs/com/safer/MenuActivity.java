@@ -62,7 +62,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import rs.com.safer.Fragment.CamionesFragment;
 import rs.com.safer.Fragment.LocationFragment;
+import rs.com.safer.Fragment.ObtenerCamionesFragment;
 import rs.com.safer.Fragment.PruebaFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
 import rs.com.safer.Fragment.WebFragment;
@@ -296,7 +298,7 @@ public class MenuActivity extends AppCompatActivity
             transaction.replace(R.id.fragment, lf);
             transaction.commit();*/
         } else if (id == R.id.nav_web) {
-
+            fragment = new ObtenerCamionesFragment();
         }
 
         if (fragment != null) {

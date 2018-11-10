@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -144,6 +145,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
     private void miUbicacion() {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         LocationManager locationManager = (LocationManager)  getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -151,7 +154,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Location location;
 
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         if (location == null) {
             location = getLastKnownLocation();
