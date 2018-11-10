@@ -37,14 +37,14 @@
             android:ems="22"
             android:inputType="textMultiLine"
             android:textColor="#8f8e8e"
-            android:textSize="14sp"
+            android:textSize="20sp"
             android:layout_weight="1"
             android:theme="@style/EditTextTheme" />
 
         <Button
             android:id="@+id/button_reporter"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:textColor="@color/colorSecondary"

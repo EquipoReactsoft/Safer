@@ -1,6 +1,7 @@
 package rs.com.safer;
 
 import android.annotation.TargetApi;
+import android.app.FragmentManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -68,8 +69,10 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.PruebaFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
+import rs.com.safer.Fragment.WebFragment;
 import rs.com.safer.Models.Usuarios;
 
 public class MenuActivity extends AppCompatActivity
@@ -107,10 +110,8 @@ public class MenuActivity extends AppCompatActivity
 
     private UbicacionFragment mMapFragment;
 
-    TimerTask timerTask;
-    TimerTask timerTask2;
-    TimerTask timerTask3;
-    Timer timer;
+    double lat = 0.0;
+    double log = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,31 +129,6 @@ public class MenuActivity extends AppCompatActivity
         descUserMenu = mHeaderView.findViewById(R.id.descMenu);
 
         mProgressDialog1 = new ProgressDialog(this);
-
-        timer = new Timer();
-
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                PermissionCamera();
-                timer.schedule(timerTask2, 1000);
-            }
-        };
-
-        timerTask2 = new TimerTask() {
-            @Override
-            public void run() {
-                PermissionLocation();
-                timer.schedule(timerTask3, 1000);
-            }
-        };
-
-        timerTask3 = new TimerTask() {
-            @Override
-            public void run() {
-                PermissionStorage();
-            }
-        };
 
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Upload");
@@ -197,11 +173,13 @@ public class MenuActivity extends AppCompatActivity
                             if(exist == true){
 
                             }else{
+                                lat = getIntent().getDoubleExtra("lat", 0.0);
+                                log = getIntent().getDoubleExtra("log", 0.0);
                                 Usuarios usuario = new Usuarios();
                                     usuario.setCorreo(user.getEmail());
                                     usuario.setPassword(user.getUid());
-                                    usuario.setLatitud(0.0);
-                                    usuario.setLongitud(0.0);
+                                    usuario.setLatitud(lat);
+                                    usuario.setLongitud(log);
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference usuariosRef = database.getReference().getRef();
@@ -248,8 +226,10 @@ public class MenuActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                PermissionStorage();
+                Snackbar.make(view, "Abriendo camara para reportar...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                //TODO modificar en un buen lugar
                 dispatchTakePictureIntent();
             }
         });
@@ -263,8 +243,6 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        timer.schedule(timerTask, 1000);
 
     }
 
@@ -302,17 +280,31 @@ public class MenuActivity extends AppCompatActivity
         Fragment fragment = null;
         int id = item.getItemId();
 
+        //FragmentManager fragmentManager = getFragmentManager();
+        //android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+
         if (id == R.id.nav_report) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_comunity) {
-            fragment = new PruebaFragment();
+            //fragment = new PruebaFragment();
+            Intent i = new Intent(MenuActivity.this, MapsActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_information) {
-            mMapFragment = new UbicacionFragment();
+           /* mMapFragment = new UbicacionFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, mMapFragment);
-            ft.commit();
+            ft.commit();*/
+           fragment = new WebFragment();
         } else if (id == R.id.nav_contact) {
-
+            /*mMapFragment = new UbicacionFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, mMapFragment);
+            ft.commit();*/
+            fragment = new LocationFragment();
+            /*LocationFragment lf = new LocationFragment();
+            transaction.replace(R.id.fragment, lf);
+            transaction.commit();*/
         } else if (id == R.id.nav_web) {
 
         }
@@ -335,6 +327,7 @@ public class MenuActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        PermissionCamera();
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
@@ -567,30 +560,6 @@ public class MenuActivity extends AppCompatActivity
                 alert.show();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
-            //return false;
-        }
-        else {
-            //return true;
-        }
-    }
-
-    public void PermissionLocation(){
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Permission necessary");
-                alertBuilder.setMessage("External storage permission is necessary");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions( MenuActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
-
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
             //return false;
         }
         else {

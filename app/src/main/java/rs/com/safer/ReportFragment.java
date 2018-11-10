@@ -1,18 +1,25 @@
 package rs.com.safer;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +54,7 @@ public class ReportFragment extends Fragment {
     Bitmap bitmap;
     Button mButtonReport;
     private ProgressBar progressBar;
+    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
 
     @Nullable
     @Override
@@ -59,6 +67,7 @@ public class ReportFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Reportar");
+        PermissionCamera();
 
         //region InicializeControls
         mImageView = getView().findViewById(R.id.photo_upload_reporte);
@@ -198,6 +207,30 @@ public class ReportFragment extends Fragment {
 
             bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
             mImageView.setImageBitmap(bitmap);
+        }
+    }
+
+    public void PermissionCamera(){
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), android.Manifest.permission.CAMERA)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Permission necessary");
+                alertBuilder.setMessage("External storage permission is necessary");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions( getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
+
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
+            //return false;
+        }
+        else {
+            //return true;
         }
     }
 }
