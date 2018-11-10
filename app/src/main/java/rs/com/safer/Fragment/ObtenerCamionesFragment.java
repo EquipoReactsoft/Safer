@@ -75,11 +75,16 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
 
     }
 
+    Double lat;
+    Double log;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_obtener_camiones, container, false);
+        Bundle extras = getActivity().getIntent().getExtras();
+            lat = extras.getDouble ("lat");//= getArguments() != null ? getArguments().getDouble("lat") : 0.0;
+            log = extras.getDouble ("log");//= getArguments() != null ? getArguments().getDouble("log") : 0.0;
         return mView;
     }
 
@@ -103,6 +108,8 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
         /*for(Marker marker:realTimeMarkers){
             marker.remove();
         }*/
+        LatLng latLng = new LatLng(lat, log);
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
 
         rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
             @Override
@@ -112,7 +119,7 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
                     Usuarios usuarios = noteDataSnapshot.getValue(Usuarios.class);
                     if(usuarios.getLatitud() != 0 && usuarios.getLongitud() != 0){
                         LatLng latLng = new LatLng(usuarios.getLatitud(), usuarios.getLongitud());
-                        mMap.clear();
+                        //mMap.clear();
                         mMap.addMarker(new MarkerOptions().position(latLng).title("")
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.location_pointer)));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));

@@ -179,17 +179,17 @@ public class MenuActivity extends AppCompatActivity
                             if(exist == true){
 
                             }else{
-                                lat = getIntent().getDoubleExtra("lat", 0.0);
+                                /*lat = getIntent().getDoubleExtra("lat", 0.0);
                                 log = getIntent().getDoubleExtra("log", 0.0);
                                 Usuarios usuario = new Usuarios();
-                                    usuario.setCorreo(user.getEmail());
-                                    usuario.setPassword(user.getUid());
-                                    usuario.setLatitud(lat);
-                                    usuario.setLongitud(log);
+                                         usuario.setCorreo(user.getEmail());
+                                         usuario.setPassword(user.getUid());
+                                         usuario.setLatitud(lat);
+                                         usuario.setLongitud(log);
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference usuariosRef = database.getReference().getRef();
-                                usuariosRef.child("Usuarios").push().setValue(usuario);
+                                usuariosRef.child("Usuarios").push().setValue(usuario);*/
                             }
                         }
 
@@ -312,7 +312,16 @@ public class MenuActivity extends AppCompatActivity
             transaction.replace(R.id.fragment, lf);
             transaction.commit();*/
         } else if (id == R.id.nav_web) {
+            Intent intent = new Intent(this, ObtenerCamionesFragment.class);
+
+            intent.putExtra("lat", lat);
+            intent.putExtra("log",log);
+
             fragment = new ObtenerCamionesFragment();
+            /*Bundle args = new Bundle();
+                   args.putDouble("lat", lat);
+                   args.putDouble("log", log);
+            fragment.setArguments(args);*/
         }
 
         if (fragment != null) {
