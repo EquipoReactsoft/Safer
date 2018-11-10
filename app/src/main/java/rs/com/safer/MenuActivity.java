@@ -1,15 +1,20 @@
 package rs.com.safer;
 
+import android.annotation.TargetApi;
 import android.app.FragmentManager;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -61,6 +66,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import rs.com.safer.Fragment.CamionesFragment;
 import rs.com.safer.Fragment.LocationFragment;
@@ -94,6 +101,8 @@ public class MenuActivity extends AppCompatActivity
     private ImageView mImageview;
     private ProgressDialog mProgressDialog1;
 
+    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
+
     private static final int TAKE_PHOTO_REQUEST = 1;
     String mCurrentPhotoPath;
     private File photoFile;
@@ -122,7 +131,6 @@ public class MenuActivity extends AppCompatActivity
         descUserMenu = mHeaderView.findViewById(R.id.descMenu);
 
         mProgressDialog1 = new ProgressDialog(this);
-
 
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Upload");
@@ -220,9 +228,10 @@ public class MenuActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                PermissionStorage();
+                Snackbar.make(view, "Abriendo camara para reportar...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                //startCamera();
+                //TODO modificar en un buen lugar
                 dispatchTakePictureIntent();
             }
         });
@@ -236,6 +245,7 @@ public class MenuActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -319,6 +329,7 @@ public class MenuActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        PermissionCamera();
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
@@ -388,11 +399,9 @@ public class MenuActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
 
-            // set the dimensions of the image
-            int targetW =100;
-            int targetH = 100;
+            int targetW =300;
+            int targetH = 300;
 
-            // Get the dimensions of the bitmap
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
@@ -424,6 +433,8 @@ public class MenuActivity extends AppCompatActivity
 
     private void dispatchTakePictureIntent() {
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         try {
             photoFile = createImageFile();
             takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
@@ -507,6 +518,54 @@ public class MenuActivity extends AppCompatActivity
     private void placeMarkerInMap(String title, double lat, double lon) {
         if (mMapFragment != null) {
             mMapFragment.placeMarker(title, lat, lon);
+        }
+    }
+
+    public void PermissionStorage(){
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Permission necessary");
+                alertBuilder.setMessage("External storage permission is necessary");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions( MenuActivity.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
+
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
+            //return false;
+        }
+        else {
+            //return true;
+        }
+    }
+
+    public void PermissionCamera(){
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.CAMERA)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Permission necessary");
+                alertBuilder.setMessage("External storage permission is necessary");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions( MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
+
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
+            //return false;
+        }
+        else {
+            //return true;
         }
     }
 }

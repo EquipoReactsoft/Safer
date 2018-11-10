@@ -1,17 +1,32 @@
 package rs.com.safer;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,12 +40,21 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ReportFragment extends Fragment {
 
     private ImageView mImageView;
     private StorageReference mStorage;
     private File photoFile;
+    String mCurrentPhotoPath;
+    private static final int TAKE_PHOTO_REQUEST = 1;
+    Bitmap bitmap;
+    Button mButtonReport;
+    private ProgressBar progressBar;
+    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
 
     @Nullable
     @Override
@@ -43,39 +67,46 @@ public class ReportFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Reportar");
+        PermissionCamera();
 
         //region InicializeControls
         mImageView = getView().findViewById(R.id.photo_upload_reporte);
-
         mStorage = FirebaseStorage.getInstance().getReference();
-
+        mButtonReport = getView().findViewById(R.id.button_reporter);
+        progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
         //endregion InicializeControl
+
         Bundle bundle = getActivity().getIntent().getExtras();
 
         if (getArguments() != null) {
-            Bitmap bitmap = getArguments().getParcelable("photo_bitmap_key");
-            //photoFile = getArguments().getParcelable("photo_file_key");
-            //File picture = (File) getActivity().getIntent().getExtras().get("photo_file_key");
+            bitmap = getArguments().getParcelable("photo_bitmap_key");
             photoFile = (File)getArguments().getSerializable("photo_file_key");
-
-            encodeBitmapAndSaveToFirebase(bitmap);
             mImageView.setImageBitmap(bitmap);
         }
 
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Lololo", Toast.LENGTH_SHORT).show();
+                dispatchTakePictureIntent();
+            }
+        });
+
+        mButtonReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bitmap != null ) {
+                    encodeBitmapAndSaveToFirebase(bitmap);
+                } else {
+                    Toast.makeText(getContext(), "Reporta con una foto por favor.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     public void encodeBitmapAndSaveToFirebase(Bitmap bitmap) {
+        progressBar.setVisibility(View.VISIBLE);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-        //image in array byte
-        //String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
         StorageReference mountainsRef = mStorage.child(photoFile.getName());
 
@@ -93,11 +124,13 @@ public class ReportFragment extends Fragment {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "¡No se pudo Reportar, vuelva intentarlo!", Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "¡Se Reportó con exito!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -110,13 +143,94 @@ public class ReportFragment extends Fragment {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "No se puedo guardar la foto en el servidor", Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                progressBar.setVisibility(View.GONE);
                 //Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        try {
+            photoFile = createImageFile();
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            int targetW = 300;
+            int targetH = 300;
+
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+
+            bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
+            mImageView.setImageBitmap(bitmap);
+        }
+    }
+
+    public void PermissionCamera(){
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), android.Manifest.permission.CAMERA)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Permission necessary");
+                alertBuilder.setMessage("External storage permission is necessary");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions( getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
+
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
+            //return false;
+        }
+        else {
+            //return true;
+        }
     }
 }
