@@ -123,6 +123,10 @@ public class MenuActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.content_frame, new LocationFragment());
+        tx.commit();
+
         mNavigationView = findViewById(R.id.nav_view);
         mHeaderView =  mNavigationView.getHeaderView(0);
 

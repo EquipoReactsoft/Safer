@@ -60,11 +60,11 @@
     <string name="fb_login_protocol_scheme">fb471606226683155</string>
     <string name="firebase_error_login">Error al iniciar sesión en Firebase</string>
     <string name="title_activity_menu">MenuActivity</string>
-    <string name="link_account">Cuenta</string>
-    <string name="link_notification">Notificaciones</string>
-    <string name="link_Privacity">Politica y Privacidad</string>
-    <string name="link_About">Acerca de ...</string>
-    <string name="link_logout">Cerrar Sesion</string>
+    <string name="link_account">\t Cuenta</string>
+    <string name="link_notification">\t Notificaciones</string>
+    <string name="link_Privacity">\t Politica y Privacidad</string>
+    <string name="link_About">\t Acerca de ...</string>
+    <string name="link_logout">\t Cerrar Sesion</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

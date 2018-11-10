@@ -106,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                     IrTermCondition.setEnabled(false);
                     IrTermCondition.setTextColor(getResources().getColor(R.color.colorDisablePrimary));
                 }
+
             }
         });
 
