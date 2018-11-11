@@ -99,7 +99,7 @@ public class MenuActivity extends AppCompatActivity
 
         //region InicializeBA
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.content_frame, new LocationFragment());
+        tx.replace(R.id.content_frame, new ObtenerCamionesFragment());
         tx.commit();
 
         mNavigationView = findViewById(R.id.nav_view);
@@ -263,8 +263,8 @@ public class MenuActivity extends AppCompatActivity
         if (id == R.id.nav_report) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_comunity) {
-            Intent i = new Intent(MenuActivity.this, MapsActivity.class);
-            startActivity(i);
+            //Intent i = new Intent(MenuActivity.this, MapsActivity.class);
+            //startActivity(i);
         } else if (id == R.id.nav_information) {
            /* mMapFragment = new UbicacionFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
