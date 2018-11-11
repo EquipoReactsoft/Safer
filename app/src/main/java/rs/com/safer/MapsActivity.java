@@ -89,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference usuariosRef = database.getReference().getRef();
                             Usuarios usuario = new Usuarios();
-try {
+                            try {
 
                             if(datasnapshot.getChildren() == null){
                                 usuariosRef.child("Usuarios").push().setValue(usuario);
@@ -121,15 +121,15 @@ try {
 
                             Intent i = new Intent(MapsActivity.this, MenuActivity.class);
                             startActivity(i);
-} catch (Exception e){
-    Usuarios usuarioc = new Usuarios();
-    usuarioc.setLongitud(0.0);
-    usuarioc.setLatitud(0.0);
-    usuarioc.setPassword("_");
-    usuarioc.setCorreo("@");
-    usuariosRef.child("Usuarios").push().setValue(usuarioc);
-//    rootRef = FirebaseDatabase.getInstance().getReference();
-}
+                        } catch (Exception e){
+                            Usuarios usuarioc = new Usuarios();
+                            usuarioc.setLongitud(0.0);
+                            usuarioc.setLatitud(0.0);
+                            usuarioc.setPassword("_");
+                            usuarioc.setCorreo("@");
+                            usuariosRef.child("Usuarios").push().setValue(usuarioc);
+                        //    rootRef = FirebaseDatabase.getInstance().getReference();
+                        }
                         }
 
                         @Override
