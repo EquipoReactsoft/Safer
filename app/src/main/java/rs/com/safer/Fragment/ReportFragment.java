@@ -89,7 +89,7 @@ public class ReportFragment extends Fragment {
 
         if (getArguments() != null) {
             bitmap = getArguments().getParcelable("photo_bitmap_key");
-            photoFile = (File)getArguments().getSerializable("photo_file_key");
+            photoFile = (File) getArguments().getSerializable("photo_file_key");
             mImageView.setImageBitmap(bitmap);
         }
 
@@ -103,7 +103,7 @@ public class ReportFragment extends Fragment {
         mButtonReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bitmap != null ) {
+                if (bitmap != null) {
                     encodeBitmapAndSaveToFirebase(bitmap);
                 } else {
                     Toast.makeText(getContext(), "Reporta con una foto por favor.", Toast.LENGTH_SHORT).show();
@@ -142,9 +142,9 @@ public class ReportFragment extends Fragment {
 //            }
 //        });
 
-       Uri file = Uri.fromFile(photoFile);
+        Uri file = Uri.fromFile(photoFile);
         String timeNow = new SimpleDateFormat("yyyyMMdd_HHmm_").format(Calendar.getInstance().getTime());
-        StorageReference riversRef = mountainsRef.child(timeNow+file.getLastPathSegment());
+        StorageReference riversRef = mountainsRef.child(timeNow + file.getLastPathSegment());
         uploadTask = riversRef.putFile(file);
         // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -218,9 +218,9 @@ public class ReportFragment extends Fragment {
         }
     }
 
-    public void PermissionCamera(){
+    public void PermissionCamera() {
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), android.Manifest.permission.CAMERA)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.CAMERA)) {
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle("Permission necessary");
@@ -229,15 +229,17 @@ public class ReportFragment extends Fragment {
 
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions( getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
 
                 AlertDialog alert = alertBuilder.create();
                 alert.show();
             } else {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
             //return false;
-        }
-        else {
+        } else {
             //return true;
         }
     }
@@ -252,7 +254,7 @@ public class ReportFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String email = getDataLocalStorageMemory();
-                for (DataSnapshot data: dataSnapshot.getChildren()){
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Reporte reporte = data.getValue(Reporte.class);
 
                     //TODO falta logica para guardar data
@@ -266,7 +268,7 @@ public class ReportFragment extends Fragment {
         });
         String timeNow = new SimpleDateFormat("yyyyMMdd_HHmmss_").format(Calendar.getInstance().getTime());
         Reporte reporte = new Reporte();
-        reporte.rid = timeNow ;
+        reporte.rid = timeNow;
     }
 
     private String getDataLocalStorageMemory() {

@@ -45,24 +45,20 @@ import java.util.List;
 
 import rs.com.safer.Models.Usuarios;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback ,GoogleApiClient.OnConnectionFailedListener{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
-    double lat = 0.0;
-    double log = 0.0;
-
+    private double lat = 0.0;
+    private double log = 0.0;
     private GoogleMap mMap;
     private Marker marcador;
-
-    LocationManager mLocationManager;
-
-    boolean canGetLocation = true;
-
-    Location location;
-    Button btnCheckLocation;
-    Boolean exist;
+    private LocationManager mLocationManager;
+    private boolean canGetLocation;
+    private Location location;
+    private Button btnCheckLocation;
+    private Boolean exist;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-    DatabaseReference rootRef;
+    private DatabaseReference rootRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,51 +85,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference usuariosRef = database.getReference().getRef();
                             Usuarios usuario = new Usuarios();
-try {
+                            try {
 
-                            if(datasnapshot.getChildren() == null){
-                                usuariosRef.child("Usuarios").push().setValue(usuario);
-                            }
-
-                            for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
-                                Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
-                                    if(urs.getCorreo().equals(user.getEmail())){
-                                        exist=true;
+                                for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
+                                    Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
+                                    assert urs != null;
+                                    if (urs.getCorreo().equals(user.getEmail())) {
+                                        exist = true;
                                         break;
-                                    }else{
-                                        exist=false;
+                                    } else {
+                                        exist = false;
                                     }
+                                }
+
+                                if (!exist) {
+                                    usuario = new Usuarios();
+                                    usuario.setCorreo(user.getEmail());
+                                    usuario.setPassword(user.getUid());
+                                    usuario.setLatitud(lat);
+                                    usuario.setLongitud(log);
+
+                                    usuariosRef.child("Usuarios").push().setValue(usuario);
+                                }
+
+                                Intent i = new Intent(MapsActivity.this, MenuActivity.class);
+                                startActivity(i);
+                            } catch (Exception e) {
+                                Usuarios usuarioc = new Usuarios();
+                                usuarioc.setLongitud(0.0);
+                                usuarioc.setLatitud(0.0);
+                                usuarioc.setPassword("_");
+                                usuarioc.setCorreo("@");
+                                usuariosRef.child("Usuarios").push().setValue(usuarioc);
                             }
-
-                            if(!exist){
-
-                                //lat = getIntent().getDoubleExtra("lat", 0.0);
-                                //log = getIntent().getDoubleExtra("log", 0.0);
-
-                                usuario = new Usuarios();
-                                usuario.setCorreo(user.getEmail());
-                                usuario.setPassword(user.getUid());
-                                usuario.setLatitud(lat);
-                                usuario.setLongitud(log);
-
-                                usuariosRef.child("Usuarios").push().setValue(usuario);
-                            }
-
-                            Intent i = new Intent(MapsActivity.this, MenuActivity.class);
-                            startActivity(i);
-} catch (Exception e){
-    Usuarios usuarioc = new Usuarios();
-    usuarioc.setLongitud(0.0);
-    usuarioc.setLatitud(0.0);
-    usuarioc.setPassword("_");
-    usuarioc.setCorreo("@");
-    usuariosRef.child("Usuarios").push().setValue(usuarioc);
-//    rootRef = FirebaseDatabase.getInstance().getReference();
-}
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            //TODO: Escribir metodo para cancelar
                         }
 
                     });
@@ -142,24 +131,11 @@ try {
         };
 
         btnCheckLocation = findViewById(R.id.btnAceptar);
+
         btnCheckLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                /*firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-                    @Override
-                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                        if (user != null) {
-                            //setUserData(user);
-                        }
-                    }
-                };*/
-
                 firebaseAuth.addAuthStateListener(firebaseAuthListener);
-
-
             }
         });
 
@@ -243,7 +219,7 @@ try {
     private void miUbicacion() {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        LocationManager locationManager = (LocationManager)  getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //return;
@@ -301,7 +277,6 @@ try {
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (isGPSEnabled || isNetworkEnabled || isPassiveEnabled) {
-
                 this.canGetLocation = true;
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled && location == null) {
@@ -311,8 +286,7 @@ try {
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
                     //Log.d("GPS", "GPS Enabled");
                     if (mLocationManager != null) {
-                        location = mLocationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     }
                 }
                 if (isPassiveEnabled && location == null) {
@@ -327,11 +301,9 @@ try {
                     mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
                     //Log.d("Network", "Network Enabled");
                     if (mLocationManager != null) {
-                        location = mLocationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     }
                 }
-
             } else {
                 return null;
             }
@@ -344,13 +316,10 @@ try {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 }

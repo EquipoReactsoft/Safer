@@ -1,16 +1,10 @@
 package rs.com.safer;
 
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -19,23 +13,19 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -44,8 +34,6 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,24 +44,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import rs.com.safer.Fragment.CamionesFragment;
 import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.ReportFragment;
 import rs.com.safer.Fragment.ObtenerCamionesFragment;
-import rs.com.safer.Fragment.PruebaFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
 import rs.com.safer.Fragment.WebFragment;
 import rs.com.safer.Models.Usuarios;
+import rs.com.safer.Utils.LocalStorage;
 import rs.com.safer.Utils.Permission;
 
 public class MenuActivity extends AppCompatActivity
@@ -83,39 +66,27 @@ public class MenuActivity extends AppCompatActivity
     private ImageView photoUserMenu;
     private TextView nameUserMenu;
     private TextView descUserMenu;
-
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-
     private GoogleApiClient googleApiClient;
     private ProfileTracker profileTracker;
-
-    NavigationView mNavigationView;
-    View mHeaderView;
-
+    private NavigationView mNavigationView;
+    private View mHeaderView;
     private static int CAMERA_REQUEST = 1234;
-
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private Uri mImageUri = null;
     private ImageView mImageview;
     private ProgressDialog mProgressDialog1;
-
-    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
-
+    private int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
     private static final int TAKE_PHOTO_REQUEST = 1;
-    String mCurrentPhotoPath;
+    private String mCurrentPhotoPath;
     private File photoFile;
-
     private UploadTask uploadTask;
-    Boolean exist;
-
+    private Boolean exist;
     private UbicacionFragment mMapFragment;
-
-    double lat = 0.0;
-    double log = 0.0;
-
-    public static final String PREFS_NAME = "MyPrefsFile";
+    private double lat = 0.0;
+    private double log = 0.0;
     //endregion DeclareVariable
 
     @Override
@@ -126,21 +97,20 @@ public class MenuActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //region InicializeBA
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.content_frame, new LocationFragment());
         tx.commit();
 
         mNavigationView = findViewById(R.id.nav_view);
-        mHeaderView =  mNavigationView.getHeaderView(0);
-
+        mHeaderView = mNavigationView.getHeaderView(0);
         photoUserMenu = mHeaderView.findViewById(R.id.imageMenu);
         nameUserMenu = mHeaderView.findViewById(R.id.userMenu);
         descUserMenu = mHeaderView.findViewById(R.id.descMenu);
-
         mProgressDialog1 = new ProgressDialog(this);
-
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Upload");
+        //endregion
 
         //region InitializeGmailAuth
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -160,7 +130,7 @@ public class MenuActivity extends AppCompatActivity
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    saveInMemoryStorage(user);
+                    LocalStorage.saveInMemoryStorageFirebase(user,MenuActivity.this);
                     setUserData(user);
                     DatabaseReference rootRef;
                     rootRef = FirebaseDatabase.getInstance().getReference();
@@ -171,17 +141,17 @@ public class MenuActivity extends AppCompatActivity
                         public void onDataChange(DataSnapshot datasnapshot) {
                             for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
                                 Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
-                                if(urs.getCorreo().equals(user.getEmail())){
-                                    exist=true;
+                                if (urs.getCorreo().equals(user.getEmail())) {
+                                    exist = true;
                                     break;
-                                }else{
-                                    exist=false;
+                                } else {
+                                    exist = false;
                                 }
                             }
 
-                            if(exist == true){
+                            if (exist == true) {
 
-                            }else{
+                            } else {
                                 /*lat = getIntent().getDoubleExtra("lat", 0.0);
                                 log = getIntent().getDoubleExtra("log", 0.0);
                                 Usuarios usuario = new Usuarios();
@@ -202,6 +172,7 @@ public class MenuActivity extends AppCompatActivity
 
                     });
                 } else {
+                    //TODO: implementar algo para validar
                     //goLogInScreen();
                 }
             }
@@ -299,7 +270,7 @@ public class MenuActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, mMapFragment);
             ft.commit();*/
-           fragment = new WebFragment();
+            fragment = new WebFragment();
         } else if (id == R.id.nav_contact) {
             /*mMapFragment = new UbicacionFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -313,7 +284,7 @@ public class MenuActivity extends AppCompatActivity
             Intent intent = new Intent(this, ObtenerCamionesFragment.class);
 
             intent.putExtra("lat", lat);
-            intent.putExtra("log",log);
+            intent.putExtra("log", log);
 
             fragment = new ObtenerCamionesFragment();
             /*Bundle args = new Bundle();
@@ -410,7 +381,7 @@ public class MenuActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
 
-            int targetW =300;
+            int targetW = 300;
             int targetH = 300;
 
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -420,7 +391,7 @@ public class MenuActivity extends AppCompatActivity
             int photoH = bmOptions.outHeight;
 
             // Determine how much to scale down the image
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
             // Decode the image file into a Bitmap sized to fill the View
             bmOptions.inJustDecodeBounds = false;
@@ -430,7 +401,7 @@ public class MenuActivity extends AppCompatActivity
             //Intent intent = new Intent (this, ReportFragment.class);
             //intent.putExtra("photo_file_key", photoFile);
 
-            Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(),bmOptions);
+            Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
             Bundle bundle = new Bundle();
             bundle.putParcelable("photo_bitmap_key", bitmap);
             bundle.putSerializable("photo_file_key", photoFile);
@@ -470,119 +441,5 @@ public class MenuActivity extends AppCompatActivity
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
-    }
-
-    public void encodeBitmapAndSaveToFirebase(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-        //image in array byte
-        String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-
-        StorageReference mountainsRef = mStorage.child(photoFile.getName());
-
-        byte[] data = baos.toByteArray();
-
-        UploadTask uploadTask = mountainsRef.putBytes(data);
-
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("Reportar")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("imageUrl");
-        //ref.setValue(imageEncoded);
-        ref.setValue(mountainsRef.toString());
-
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Toast.makeText(getApplicationContext(), "¡No se pudo Reportar, vuelva intentarlo!", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getApplicationContext(), "¡Se Reportó con exito!", Toast.LENGTH_SHORT).show();
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
-
-        Uri file = Uri.fromFile(photoFile);
-        StorageReference riversRef = mountainsRef.child("images/"+file.getLastPathSegment());
-        uploadTask = riversRef.putFile(file);
-
-// Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getApplicationContext(), "No se puedo guardar la foto en el servidor", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                //Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-    public void PermissionStorage(){
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Permission necessary");
-                alertBuilder.setMessage("External storage permission is necessary");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions( MenuActivity.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
-
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
-            Toast.makeText(getApplicationContext(), "Vuelve a intentarlo", Toast.LENGTH_LONG).show();
-            //return false;
-        }
-        else {
-            //return true;
-        }
-    }
-
-    public void PermissionCamera(){
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.CAMERA)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Permission necessary");
-                alertBuilder.setMessage("External storage permission is necessary");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions( MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}});
-
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);}
-            //return false;
-        }
-        else {
-            //return true;
-        }
-    }
-
-    private void saveInMemoryStorage(FirebaseUser firebaseUser ){
-        // We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("user_email_local_storage", firebaseUser.getEmail());
-
-        // Commit the edits!
-        editor.commit();
     }
 }
