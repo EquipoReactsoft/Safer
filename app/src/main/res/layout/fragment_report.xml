@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="199dp"
             android:background="#88E288"
+            android:layout_weight="8"
             android:orientation="vertical">
 
             <ImageView
@@ -33,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="126dp"
             android:layout_margin="10dp"
-            android:layout_weight="1"
+            android:layout_weight="6"
             android:background="#ffffff"
             android:ems="22"
             android:hint="Escribe un comentario.."
@@ -50,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginBottom="15dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:background="@color/colorPrimary"
             android:freezesText="true"
             android:text="@string/reporter_button"

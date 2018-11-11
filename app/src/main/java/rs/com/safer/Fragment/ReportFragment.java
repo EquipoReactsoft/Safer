@@ -158,7 +158,7 @@ public class ReportFragment extends Fragment {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 progressBar.setVisibility(View.GONE);
                 SaveReporte();
-                //Toast.makeText(getApplicationContext(), "SUCESS SUCESS SUCESS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "¡Se reportó con éxito!", Toast.LENGTH_SHORT).show();
             }
         });
     }
