@@ -21,7 +21,7 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
 
     private GoogleApiClient googleApiClient;
 
-    private Button btnLogOut;
+    private Button btnLogOut, btnAboutSetting, btnPrivacySetting;
 
     private FirebaseAuth firebaseAuth;
 
@@ -35,6 +35,8 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
         this.setTitle("Más Opciones");
 
         btnLogOut = (Button) findViewById(R.id.btnLogOutSetting);
+        btnAboutSetting = (Button) findViewById(R.id.btnAboutSetting);
+        btnPrivacySetting = (Button) findViewById(R.id.btnPrivacySetting) ;
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -61,6 +63,23 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
                 });
             }
         });
+
+        btnAboutSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(SettingActivity.this, AcercaDeActivity.class);
+                startActivity(i);
+            }
+        });
+
+        btnPrivacySetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(SettingActivity.this, PoliticaPrivacidadActivity.class);
+                startActivity(i);
+            }
+        });
+        
 
         firebaseAuth = FirebaseAuth.getInstance();
 //        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
