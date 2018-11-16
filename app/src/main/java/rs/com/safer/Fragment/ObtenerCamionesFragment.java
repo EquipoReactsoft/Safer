@@ -36,14 +36,14 @@ import rs.com.safer.R;
 
 public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallback {
 
-    DatabaseReference rootRef, demoRef;
+    DatabaseReference rootRef;
     double Lat, Logdd;
     private GoogleMap mMap;
     MapView mMapView;
     View mView;
 
-    //private ArrayList<Marker> tmpRealTimeMarkers = new ArrayList<>();
-    //private ArrayList<Marker> realTimeMarkers = new ArrayList<>();
+    private ArrayList<Marker> tmpRealTimeMarkers = new ArrayList<>();
+    private ArrayList<Marker> realTimeMarkers = new ArrayList<>();
 
     public ObtenerCamionesFragment() {
         // Required empty public constructor
@@ -54,11 +54,11 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef = FirebaseDatabase.getInstance().getReference();
         //countDownTimer();
     }
 
-    private void countDownTimer(){
+    /*private void countDownTimer(){
 
         new CountDownTimer(10000, 1000){
 
@@ -73,7 +73,7 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
 
         }.start();
 
-    }
+    }*/
 
     Double lat;
     Double log;
@@ -82,9 +82,11 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_obtener_camiones, container, false);
+
         Bundle extras = getActivity().getIntent().getExtras();
             lat = extras.getDouble ("lat");//= getArguments() != null ? getArguments().getDouble("lat") : 0.0;
             log = extras.getDouble ("log");//= getArguments() != null ? getArguments().getDouble("log") : 0.0;
+
         return mView;
     }
 
@@ -104,25 +106,37 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         rootRef = FirebaseDatabase.getInstance().getReference();
         /*for(Marker marker:realTimeMarkers){
             marker.remove();
         }*/
-        LatLng latLng = new LatLng(lat, log);
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
+        //LatLng latLng = new LatLng(lat, log);
+        //mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
 
         rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot datasnapshot) {
-                List listUsers = new ArrayList();
+                //List listUsers = new ArrayList();
+                for(Marker marker:realTimeMarkers){
+                    marker.remove();
+                }
                 for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
                     Usuarios usuarios = noteDataSnapshot.getValue(Usuarios.class);
                     if(usuarios.getLatitud() != 0 && usuarios.getLongitud() != 0){
                         LatLng latLng = new LatLng(usuarios.getLatitud(), usuarios.getLongitud());
-                        //mMap.clear();
+
                         mMap.addMarker(new MarkerOptions().position(latLng).title("")
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.location_pointer)));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+
+                        /*Usuarios usuario = noteDataSnapshot.getValue(Usuarios.class);
+                        Double latitud = usuario.getLatitud();
+                        Double longitud = usuario.getLongitud();
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(new LatLng(latitud, longitud));
+                        tmpRealTimeMarkers.add(mMap.addMarker(markerOptions));
+                        */
                     }
 
                     //mMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
@@ -134,9 +148,8 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
                     tmpRealTimeMarkers.add(mMap.addMarker(markerOptions));
                     */
                 }
-
-                //realTimeMarkers.clear();
-                //realTimeMarkers.addAll(tmpRealTimeMarkers);
+                realTimeMarkers.clear();
+                realTimeMarkers.addAll(tmpRealTimeMarkers);
             }
 
             @Override

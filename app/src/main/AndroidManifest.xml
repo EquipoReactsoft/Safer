@@ -85,13 +85,13 @@
             android:theme="@style/AppTheme.Presentation" />
         <activity
             android:name=".AcercaDeActivity"
-            android:theme="@style/AppTheme.Presentation">
-
-        </activity>
-        <activity android:name=".PoliticaPrivacidadActivity"
-                  android:theme="@style/AppTheme.Presentation">
-
-        </activity>
+            android:theme="@style/AppTheme.Presentation"></activity>
+        <activity
+            android:name=".PoliticaPrivacidadActivity"
+            android:theme="@style/AppTheme.Presentation"></activity>
+        <activity
+            android:name=".UserInfoActivity"
+            android:theme="@style/AppTheme.Presentation"></activity>
     </application>
 
 </manifest>
