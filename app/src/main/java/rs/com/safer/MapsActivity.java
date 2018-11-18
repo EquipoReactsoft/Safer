@@ -102,7 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 if (!exist) {
                                     String gmail="google.com";
                                     String facebook="facebook.com";
-                                    String firebase="firebase.com";
+                                    String firebase="firebase";
+                                    String type = "";
 
                                     usuario = new Usuarios();
                                     usuario.setCorreo(user.getEmail());
@@ -110,13 +111,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     usuario.setLatitud(lat);
                                     usuario.setLongitud(log);
 
-                                    for (UserInfo userInfo: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                                    /*for (UserInfo userInfo: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                                         if (userInfo.getProviderId().equals(user.getProviderId()))
                                         {
-                                            usuario.setTypeProveedor(user.getProviderId());
-                                            //break;
+                                            if (userInfo.getProviderId().equals(gmail))
+                                            {
+                                                type = gmail;
+                                            }
+                                            if (userInfo.getProviderId().equals(facebook))
+                                            {
+                                                type = facebook;
+                                            }
+                                            if (userInfo.getProviderId().equals(firebase))
+                                            {
+                                                type = firebase;
+                                            }
+                                            usuario.setTypeProveedor(type);
+                                            break;
                                         }
-                                    }
+
+                                    }*/
 
 
                                     usuariosRef.child("Usuarios").push().setValue(usuario);
