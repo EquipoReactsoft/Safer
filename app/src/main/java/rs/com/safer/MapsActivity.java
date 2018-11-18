@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -99,11 +100,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
 
                                 if (!exist) {
+                                    String gmail="google.com";
+                                    String facebook="facebook.com";
+                                    String firebase="firebase.com";
+
                                     usuario = new Usuarios();
                                     usuario.setCorreo(user.getEmail());
                                     usuario.setPassword(user.getUid());
                                     usuario.setLatitud(lat);
                                     usuario.setLongitud(log);
+
+                                    for (UserInfo userInfo: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                                        if (userInfo.getProviderId().equals(user.getProviderId()))
+                                        {
+                                            usuario.setTypeProveedor(user.getProviderId());
+                                            //break;
+                                        }
+                                    }
+
 
                                     usuariosRef.child("Usuarios").push().setValue(usuario);
                                 }

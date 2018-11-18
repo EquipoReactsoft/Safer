@@ -139,10 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
-
         auth = FirebaseAuth.getInstance();
-
         AgregarBtnU.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 auth.signOut();
                                 Toast.makeText(getApplicationContext(), "REGISTRO CORRECTO", Toast.LENGTH_LONG).show();
                                 AgregarUsuario();
-                                Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                                Intent i = new Intent(RegisterActivity.this, TipoDireccionActivity.class);
                                 startActivity(i);
                                 finish();
                             }
@@ -234,7 +231,8 @@ public class RegisterActivity extends AppCompatActivity {
         usuario.setPassword(passU);
         usuario.setLatitud(0.0);
         usuario.setLongitud(0.0);
-
+        usuario.setTypeProveedor("firebase.google.com");
+        //usuario.setTypeProveedor();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference usuariosRef = database.getReference().getRef();
         usuariosRef.child("Usuarios").push().setValue(usuario);
