@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -141,34 +142,11 @@ public class ReportFragment extends Fragment {
         StorageReference mountainsRef = mStorage.child(Constants.DirectorioReporte);
         final UploadTask uploadTask;
 
-//        StorageReference mountainsRef = mStorage.child(photoFile.getName());
-//
-//        String sad = mountainsRef.getPath();
-//
-//        byte[] data = baos.toByteArray();
-//
-//        UploadTask uploadTask = mountainsRef.putBytes(data);
-//
-//
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                progressBar.setVisibility(View.GONE);
-//                Toast.makeText(getActivity(), "¡No se pudo Reportar, vuelva intentarlo!", Toast.LENGTH_SHORT).show();
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                progressBar.setVisibility(View.GONE);
-//                Toast.makeText(getActivity(), "¡Se Reportó con exito!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
         Uri file = Uri.fromFile(photoFile);
         String timeNow = new SimpleDateFormat("yyyyMMdd_HHmm_").format(Calendar.getInstance().getTime());
         StorageReference storageRef = mountainsRef.child(timeNow + file.getLastPathSegment());
+
         uploadTask = storageRef.putFile(file);
-        final String urlPhoto = storageRef.getPath();
-        // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
@@ -179,8 +157,13 @@ public class ReportFragment extends Fragment {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 progressBar.setVisibility(View.GONE);
-                SaveReporte(urlPhoto);
-                //Toast.makeText(getActivity().getApplicationContext(), "¡Se reportó con éxito!", Toast.LENGTH_SHORT).show();
+                Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        SaveReporte(uri.toString());
+                    }
+                });
             }
         });
     }
