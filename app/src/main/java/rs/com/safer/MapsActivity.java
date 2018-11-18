@@ -84,7 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void onDataChange(DataSnapshot datasnapshot) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference usuariosRef = database.getReference().getRef();
-                            Usuarios usuario = new Usuarios();
+                            Usuarios usuario;
                             try {
 
                                 for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {

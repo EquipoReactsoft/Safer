@@ -30,7 +30,7 @@
         </LinearLayout>
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/comentaryText"
             android:layout_width="match_parent"
             android:layout_height="126dp"
             android:layout_margin="10dp"

@@ -3,7 +3,6 @@ package rs.com.safer.Models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
 public class Reporte {
     public String rid;
     public String url;
-    public LocalDate fecha;
+    public Date fecha;
     public String comentario;
     public Boolean limpio;
     public Double latitud;
@@ -24,7 +23,7 @@ public class Reporte {
     public Reporte() {
     }
 
-    public Reporte(String id, String url, LocalDate fecha, String comentario, Boolean limpio, Double latitud, Double longitud, String nombreusuario, String fotoUsuario, String nombreUbicacion) {
+    public Reporte(String id, String url, Date fecha, String comentario, Boolean limpio, Double latitud, Double longitud, String nombreusuario, String fotoUsuario, String nombreUbicacion) {
         this.rid = rid;
         this.url = url;
         this.fecha = fecha;

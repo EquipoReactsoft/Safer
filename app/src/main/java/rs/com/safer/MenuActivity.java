@@ -130,7 +130,7 @@ public class MenuActivity extends AppCompatActivity
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    LocalStorage.saveInMemoryStorageFirebase(user,MenuActivity.this);
+                    LocalStorage.setLocalStorageFirebaseUser(user,MenuActivity.this);
                     setUserData(user);
                     DatabaseReference rootRef;
                     rootRef = FirebaseDatabase.getInstance().getReference();

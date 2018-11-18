@@ -28,11 +28,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,26 +48,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import rs.com.safer.MenuActivity;
 import rs.com.safer.Models.Reporte;
 import rs.com.safer.R;
 import rs.com.safer.Utils.Constants;
+import rs.com.safer.Utils.LocalStorage;
 
 public class ReportFragment extends Fragment {
 
     private ImageView mImageView;
     private StorageReference mStorage;
     private File photoFile;
-    String mCurrentPhotoPath;
+    private String mCurrentPhotoPath;
     private static final int TAKE_PHOTO_REQUEST = 1;
-    Bitmap bitmap;
-    Button mButtonReport;
+    private Bitmap bitmap;
+    private Button mButtonReport;
     private ProgressBar progressBar;
-    int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
-    public static final String PREFS_NAME = "MyPrefsFile";
+    private int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
+    private static final String PREFS_NAME = "MyPrefsFile";
+    private TextView mComentario;
+
 
     @Nullable
     @Override
@@ -84,7 +92,8 @@ public class ReportFragment extends Fragment {
         mImageView = getView().findViewById(R.id.photo_upload_reporte);
         mStorage = FirebaseStorage.getInstance().getReference();
         mButtonReport = getView().findViewById(R.id.button_reporter);
-        progressBar = (ProgressBar) getView().findViewById(R.id.progressBar);
+        progressBar = getView().findViewById(R.id.progressBar);
+        mComentario = getView().findViewById(R.id.comentaryText);
         //endregion InicializeControl
 
         if (getArguments() != null) {
@@ -117,7 +126,7 @@ public class ReportFragment extends Fragment {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         StorageReference mountainsRef = mStorage.child(Constants.DirectorioReporte);
-        UploadTask uploadTask;
+        final UploadTask uploadTask;
 
 //        StorageReference mountainsRef = mStorage.child(photoFile.getName());
 //
@@ -141,11 +150,11 @@ public class ReportFragment extends Fragment {
 //                Toast.makeText(getActivity(), "¡Se Reportó con exito!", Toast.LENGTH_SHORT).show();
 //            }
 //        });
-
         Uri file = Uri.fromFile(photoFile);
         String timeNow = new SimpleDateFormat("yyyyMMdd_HHmm_").format(Calendar.getInstance().getTime());
-        StorageReference riversRef = mountainsRef.child(timeNow + file.getLastPathSegment());
-        uploadTask = riversRef.putFile(file);
+        StorageReference storageRef = mountainsRef.child(timeNow + file.getLastPathSegment());
+        uploadTask = storageRef.putFile(file);
+        final String urlPhoto = storageRef.getPath();
         // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -157,8 +166,8 @@ public class ReportFragment extends Fragment {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 progressBar.setVisibility(View.GONE);
-                SaveReporte();
-                Toast.makeText(getActivity().getApplicationContext(), "¡Se reportó con éxito!", Toast.LENGTH_SHORT).show();
+                SaveReporte(urlPhoto);
+                //Toast.makeText(getActivity().getApplicationContext(), "¡Se reportó con éxito!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -244,37 +253,47 @@ public class ReportFragment extends Fragment {
         }
     }
 
-    private void SaveReporte() {
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(Constants.Tabla_Reporte);
+    private void SaveReporte(String urlPhoto) {
+        try {
+            // Get a reference to our posts
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference refDBReport = database.getReference(Constants.Tabla_Reporte);
 
-// Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String email = getDataLocalStorageMemory();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Reporte reporte = data.getValue(Reporte.class);
+            Object objectUser = LocalStorage.getLocalStorageFirebaseUser(getActivity());
+            String email = (String)objectUser.getClass().getDeclaredField(Constants.email).get(objectUser);
+            String uid = (String)objectUser.getClass().getDeclaredField(Constants.uid).get(objectUser);
+            String name = (String)objectUser.getClass().getDeclaredField(Constants.name).get(objectUser);
+            String timeNow = new SimpleDateFormat("yyyyMMdd_HHmmss_").format(Calendar.getInstance().getTime());
 
-                    //TODO falta logica para guardar data
-                }
-            }
+            Reporte reporte = new Reporte();
+            reporte.rid = email;
+            reporte.fecha = new Date();
+            reporte.comentario = mComentario.getText().toString();
+            reporte.url = urlPhoto;
+            reporte.limpio = false;
+            reporte.nombreusuario = name;
+            reporte.latitud = 0.0;
+            reporte.longitud = 0.0;
+            reporte.nombreUbicacion = "Av. Mi Casita xD";
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-        String timeNow = new SimpleDateFormat("yyyyMMdd_HHmmss_").format(Calendar.getInstance().getTime());
-        Reporte reporte = new Reporte();
-        reporte.rid = timeNow;
-    }
+            refDBReport.child(timeNow + uid).push().setValue(reporte)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity().getApplicationContext(), "¡Se reportó con éxito!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity().getApplicationContext(), "¡Intentalo nuevamente por favor!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-    private String getDataLocalStorageMemory() {
-        // Restore preferences
-        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
-        String email = settings.getString("user_email_local_storage", "");
-        return email;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 }
