@@ -51,6 +51,8 @@ import java.util.TimerTask;
 import rs.com.safer.Models.Usuarios;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+
+    //region DeclarationVariable
     /*------------------Google----------------------*/
     private GoogleApiClient googleApiClient;
     private SignInButton signInButton;
@@ -76,6 +78,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private EditText lEditPassword;
     /*------------------------------------------------------*/
     private Boolean exist;
+
+    //endregion DeclarationVariable
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,10 +105,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
+                //progressBar.setVisibility(View.VISIBLE);
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, SIGN_IN_CODE);
-                progressBar.setVisibility(View.GONE);
+                //progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -114,63 +119,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user != null) {
-
-                        firebaseAuth = FirebaseAuth.getInstance();
-                        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-                            @Override
-                            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                                final FirebaseUser user = firebaseAuth.getCurrentUser();
-                                if (user != null) {
-
-                                    rootRef = FirebaseDatabase.getInstance().getReference();
-
-                                    rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
-
-                                        @Override
-                                        public void onDataChange(DataSnapshot datasnapshot) {
-                                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                            final DatabaseReference usuariosRef = database.getReference().getRef();
-                                            Usuarios usuario = new Usuarios();
-                                            try {
-
-                                                for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
-                                                    Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
-                                                    assert urs != null;
-                                                    if (urs.getCorreo().equals(user.getEmail())) {
-                                                        exist = true;
-                                                        break;
-                                                    } else {
-                                                        exist = false;
-                                                    }
-                                                }
-
-                                                if (!exist) {
-                                                    goMapsScreen();
-                                                }else{
-                                                    goMainScreen();
-                                                }
-
-                                            } catch (Exception e) {
-                                                Usuarios usuarioc = new Usuarios();
-                                                usuarioc.setLongitud(0.0);
-                                                usuarioc.setLatitud(0.0);
-                                                usuarioc.setPassword("_");
-                                                usuarioc.setCorreo("@");
-                                                usuariosRef.child("Usuarios").push().setValue(usuarioc);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            //TODO: Escribir metodo para cancelar
-                                        }
-
-                                    });
-                                }
-                            }
-                        };
-
-
+                        goMainScreen();
                     }
                 }
             };
@@ -254,13 +203,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         PermissionLocation();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
-
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -322,12 +269,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainScreen() {
-        Intent intent = new Intent(this, MenuActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    private void goMapsScreen() {
         Intent intent = new Intent(this, TipoDireccionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

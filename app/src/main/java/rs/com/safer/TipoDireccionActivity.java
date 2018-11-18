@@ -83,7 +83,6 @@ public class TipoDireccionActivity extends AppCompatActivity implements GoogleAp
 
     }
 
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = LocationRequest.create();
