@@ -6,16 +6,19 @@ public class Usuarios {
     private String password;
     private Double latitud;
     private Double longitud;
+    private String typeProveedor;
 
     public Usuarios() {
     }
 
-    public Usuarios(String correo, String password, Double latitud, Double longitud) {
+    public Usuarios(String correo, String password, Double latitud, Double longitud, String typeProveedor) {
         this.correo = correo;
         this.password = password;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.typeProveedor = typeProveedor;
     }
+
 
     public String getCorreo() {
         return correo;
@@ -47,5 +50,13 @@ public class Usuarios {
 
     public void setLongitud(Double longitud) {
         this.longitud = longitud;
+    }
+
+    public String getTypeProveedor() {
+        return typeProveedor;
+    }
+
+    public void setTypeProveedor(String typeProveedor) {
+        this.typeProveedor = typeProveedor;
     }
 }

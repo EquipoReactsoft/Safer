@@ -22,11 +22,11 @@
 
     <application
         android:name=".SaferApp"
-        android:screenOrientation="portrait"
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo_safer_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
@@ -74,13 +74,23 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_map"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Presentation"/>
+            android:theme="@style/AppTheme.Presentation" />
         <activity
             android:name=".ConditionActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Presentation" />
-        <activity android:name=".TipoDireccionActivity"
+        <activity
+            android:name=".TipoDireccionActivity"
+            android:theme="@style/AppTheme.Presentation" />
+        <activity
+            android:name=".AcercaDeActivity"
+            android:theme="@style/AppTheme.Presentation"></activity>
+        <activity
+            android:name=".PoliticaPrivacidadActivity"
+            android:theme="@style/AppTheme.Presentation"></activity>
+        <activity
+            android:name=".UserInfoActivity"
             android:theme="@style/AppTheme.Presentation"></activity>
     </application>
 

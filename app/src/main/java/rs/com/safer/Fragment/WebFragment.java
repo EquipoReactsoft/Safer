@@ -15,7 +15,7 @@ import rs.com.safer.R;
 
 public class WebFragment extends Fragment {
 
-    ImageView saferLink;
+    ImageView saferLink, saferFacebook;
 
     public WebFragment() {
         // Required empty public constructor
@@ -34,12 +34,23 @@ public class WebFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Web y Redes Sociales");
         saferLink = getView().findViewById(R.id.saferLink);
+        saferFacebook = getView().findViewById(R.id.saferFacebook);
 
         saferLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Uri uri = Uri.parse("http://www.google.com/");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        saferFacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://www.facebook.com/");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
