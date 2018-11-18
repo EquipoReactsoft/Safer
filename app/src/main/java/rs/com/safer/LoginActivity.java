@@ -86,6 +86,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        progressBar = findViewById(R.id.progressBar);
+
         btnLogIn = findViewById(R.id.btnLogIn);
         btnIrRegisterActivity = findViewById(R.id.btnIrRegisterActivity);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -105,10 +107,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, SIGN_IN_CODE);
-                //progressBar.setVisibility(View.GONE);
+
             }
         });
 
@@ -146,7 +148,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         loginButton.setReadPermissions("email");
-        progressBar = findViewById(R.id.progressBar);
         //btnCs = (Button) findViewById(R.id.btnCS);
         /*btnCs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +162,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                progressBar.setVisibility(View.VISIBLE);
                 String email = lEditEmail.getText().toString();
                 String pass = lEditPassword.getText().toString();
 
@@ -181,13 +182,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     if (!task.isSuccessful()) {
                                         Toast.makeText(LoginActivity.this, "Error al Ingresa, Digite Correctamente sus Datos", Toast.LENGTH_LONG).show();
                                     } else {
-                                        Intent i = new Intent(LoginActivity.this, TipoDireccionActivity.class);
-                                        startActivity(i);
-                                        finish();
+                                        goMainScreen();
                                     }
                                 }
                             });
                 }
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -269,6 +269,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainScreen() {
+        progressBar.setVisibility(View.GONE);
         Intent intent = new Intent(this, TipoDireccionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

@@ -20,9 +20,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,11 +63,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private DatabaseReference rootRef;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -237,15 +244,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //return;
         }
         Location location;
-
         location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        if (location == null) {
-            location = getLastKnownLocation();
+        while (location != null) {
+            if (location == null) {
+                location = getLastKnownLocation();
+            }
+            if (location == null) {
+                location = getLocation();
+            }
+            if (location == null) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
         }
-        if (location == null) {
-            location = getLocation();
-        }
+
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates
                 (LocationManager.PASSIVE_PROVIDER,
