@@ -1,17 +1,12 @@
 package rs.com.safer.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -25,75 +20,44 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-import java.util.List;
-
-import rs.com.safer.Models.Camion;
 import rs.com.safer.Models.Usuarios;
 import rs.com.safer.R;
 import rs.com.safer.Utils.Constants;
 import rs.com.safer.Utils.LocalStorage;
 
-
 public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallback {
 
     DatabaseReference rootRef;
-    double Lat, Logdd;
+    double lat =  0.0;
+    double log =  0.0;
     private GoogleMap mMap;
-    MapView mMapView;
-    View mView;
-
+    private MapView mMapView;
+    private View mView;
     private ArrayList<Marker> tmpRealTimeMarkers = new ArrayList<>();
     private ArrayList<Marker> realTimeMarkers = new ArrayList<>();
-
-    public ObtenerCamionesFragment() {
-        // Required empty public constructor
-    }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         rootRef = FirebaseDatabase.getInstance().getReference();
-        //countDownTimer();
     }
 
-    /*private void countDownTimer(){
-
-        new CountDownTimer(10000, 1000){
-
-            public void onTick(long millisUntilFinished){
-                Log.e("second remaining:",""+millisUntilFinished/1000 );
-                //onMapReady(mMap);
-            }
-
-            public void onFinish(){
-                onMapReady(mMap);
-            }
-
-        }.start();
-
-    }*/
-
-    Double lat;
-    Double log;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_obtener_camiones, container, false);
 
-        Bundle extras = getActivity().getIntent().getExtras();
         try {
             Object objectUser = LocalStorage.getLocalStorageLatLog(getActivity());
 
             String slat = objectUser.getClass().getDeclaredField(Constants.user_lat_obj).get(objectUser).toString();
             String slog = objectUser.getClass().getDeclaredField(Constants.user_lon_obj).get(objectUser).toString();
+            if (!slat.isEmpty() && !slog.isEmpty()) {
+                lat = Double.parseDouble(slat);
+                log = Double.parseDouble(slog);
+            }
 
-            lat = Double.parseDouble(slat);
-            log = Double.parseDouble(slog);
         }catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
@@ -108,7 +72,7 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapView = (MapView) mView.findViewById(R.id.mapCamiones);
+        mMapView = mView.findViewById(R.id.mapCamiones);
 
         if (mMapView != null) {
             mMapView.onCreate(null);
@@ -123,9 +87,6 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         rootRef = FirebaseDatabase.getInstance().getReference();
-        /*for(Marker marker:realTimeMarkers){
-            marker.remove();
-        }*/
         LatLng latLng = new LatLng(lat, log);
         mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
 

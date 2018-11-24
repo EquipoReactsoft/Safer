@@ -37,7 +37,7 @@
             android:layout_weight="6"
             android:background="#ffffff"
             android:ems="22"
-            android:hint="Escribe un comentario.."
+            android:hint="Escribe un comentario..."
             android:inputType="textMultiLine"
             android:maxEms="250"
             android:textColor="#8f8e8e"

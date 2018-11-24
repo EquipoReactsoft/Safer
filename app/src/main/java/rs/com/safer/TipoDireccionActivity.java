@@ -1,6 +1,8 @@
 package rs.com.safer;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.support.annotation.NonNull;
@@ -154,7 +156,20 @@ public class TipoDireccionActivity extends AppCompatActivity implements GoogleAp
                     case Activity.RESULT_OK:
                     {
                         // All required changes were successfully made
-                        Toast.makeText(TipoDireccionActivity.this, "¡Localización activada por el usuario!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(TipoDireccionActivity.this, "¡Localización activada!", Toast.LENGTH_LONG).show();
+                        if ( getIntent().getBooleanExtra("Exit me", false)) {
+
+                            Intent mStartActivity = new Intent(this, SplashActivity.class);
+                            int mPendingIntentId = 123456;
+                            PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            AlarmManager mgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
+                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+
+                            finish();
+                            Toast.makeText(TipoDireccionActivity.this, "¡Vuelve a intentarlo!", Toast.LENGTH_LONG).show();
+                            return; // add this to prevent from doing unnecessary stuffs
+
+                        }
                         break;
                     }
                     case Activity.RESULT_CANCELED:

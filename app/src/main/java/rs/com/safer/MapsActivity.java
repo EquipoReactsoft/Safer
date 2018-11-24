@@ -49,7 +49,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import rs.com.safer.Models.Usuarios;
-import rs.com.safer.Utils.Constants;
 import rs.com.safer.Utils.LocalStorage;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
@@ -87,18 +86,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     rootRef = FirebaseDatabase.getInstance().getReference();
-
                     rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
-
                         @Override
                         public void onDataChange(DataSnapshot datasnapshot) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-
                             final DatabaseReference usuariosRef = database.getReference().getRef();
                             Usuarios usuario;
-
                             try {
-
                                 for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
                                     Usuarios urs = noteDataSnapshot.getValue(Usuarios.class);
                                     assert urs != null;
@@ -111,12 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
 
                                 if (!exist) {
-
                                     String gmail="google.com";
                                     String facebook="facebook.com";
                                     String firebase="firebase";
                                     String type = "";
-
                                     usuario = new Usuarios();
                                     usuario.setCorreo(user.getEmail());
                                     usuario.setPassword(user.getUid());
@@ -126,35 +118,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     LatLng latLng = new LatLng(lat, log);
                                     LocalStorage.setLocalStorageLatLog (latLng,MapsActivity.this);
 
-
-                                    /*for (UserInfo userInfo: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
-                                        if (userInfo.getProviderId().equals(user.getProviderId()))
-                                        {
-                                            if (userInfo.getProviderId().equals(gmail))
-                                            {
-                                                type = gmail;
-                                            }
-                                            if (userInfo.getProviderId().equals(facebook))
-                                            {
-                                                type = facebook;
-                                            }
-                                            if (userInfo.getProviderId().equals(firebase))
-                                            {
-                                                type = firebase;
-                                            }
-                                            usuario.setTypeProveedor(type);
-                                            break;
-                                        }
-
-                                    }*/
-
-
                                     usuariosRef.child("Usuarios").push().setValue(usuario);
                                 }
 
-
                                 Intent i = new Intent(MapsActivity.this, MenuActivity.class);
                                 startActivity(i);
+
                             } catch (Exception e) {
                                 Usuarios usuarioc = new Usuarios();
                                 usuarioc.setLongitud(0.0);
@@ -173,26 +142,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     });
 
-                    //LocalStorage.setLocalStorageFirebaseUser(user,MapsActivity.this);
-                    /*
-                    try {
-                        Object objectUser = LocalStorage.getLocalStorageFirebaseUser(MapsActivity.this);
-                        Double lat = (Double)objectUser.getClass().getDeclaredField(Constants.user_latitud).get(objectUser);
-                        Double log = (Double)objectUser.getClass().getDeclaredField(Constants.user_longitud).get(objectUser);
-                    }catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
-                    }
-                    */
-                    /*if(lat!=0 && log!=0){
-                        Intent i = new Intent(MapsActivity.this, MenuActivity.class);
-                        startActivity(i);
-                    }else{
-
-                    }
-                    */
-
                 }
             }
         };
@@ -210,18 +159,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        miUbicacion();
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
         mMap.setMyLocationEnabled(true);
+        miUbicacion();
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
+        // Puede tratar con una imagen svg
         Drawable background = ContextCompat.getDrawable(context, vectorDrawableResourceId);
         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
@@ -231,6 +180,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         background.draw(canvas);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    private void actualizarUbicacion(Location location) {
+        if (location != null) {
+            lat = location.getLatitude();
+            log = location.getLongitude();
+            agregarMarcador(lat, log);
+        }
     }
 
     private void agregarMarcador(double lat, double log) {
@@ -243,15 +200,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .icon(bitmapDescriptorFromVector(this, R.drawable.ic_home)));
         mMap.animateCamera(miUbicacion);
     }
-
-    private void actualizarUbicacion(Location location) {
-        if (location != null) {
-            lat = location.getLatitude();
-            log = location.getLongitude();
-            agregarMarcador(lat, log);
-        }
-    }
-
     LocationListener locListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -283,12 +231,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //return;
         }
         Location location;
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        while (location != null) {
-            if (location == null) {
-                location = getLastKnownLocation();
-            }
+        location = getLastKnownLocation();
+        while (location == null) {
+            location = getLastKnownLocation();
             if (location == null) {
                 location = getLocation();
             }
@@ -298,11 +243,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         actualizarUbicacion(location);
-        locationManager.requestLocationUpdates
-                (LocationManager.PASSIVE_PROVIDER,
-                        15000,
-                        0,
-                        locListener);
+//        locationManager.requestLocationUpdates
+//                (LocationManager.PASSIVE_PROVIDER,
+//                        15000,
+//                        0,
+//                        locListener);
     }
 
     private Location getLastKnownLocation() {

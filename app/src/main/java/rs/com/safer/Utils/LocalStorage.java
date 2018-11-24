@@ -17,6 +17,7 @@ public class LocalStorage {
         editor.putString(Constants.user_email, firebaseUser.getEmail());
         editor.putString(Constants.user_uid, firebaseUser.getUid());
         editor.putString(Constants.user_name, firebaseUser.getDisplayName());
+        editor.putString(Constants.user_photo, firebaseUser.getPhotoUrl().toString());
 
         editor.commit();
     }
@@ -31,9 +32,10 @@ public class LocalStorage {
         final String name = settings.getString(Constants.user_name, "");
 
         Object object = new Object() {
-            final String user_email = email;
-            final String user_uid = uid;
-            final String user_name = name;
+            final String user_email_obj = email;
+            final String user_uid_obj = uid;
+            final String user_name_obj = name;
+            final String user_photo_obj = name;
         };
         return object;
     }
