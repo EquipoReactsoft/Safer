@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,9 +27,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +64,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import rs.com.safer.MenuActivity;
 import rs.com.safer.Models.Reporte;
@@ -80,14 +85,12 @@ public class ReportFragment extends Fragment {
     private int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
     private static final String PREFS_NAME = "MyPrefsFile";
     private TextView mComentario;
-
-
-
-    double lat = 0.0;
-    double log = 0.0;
-    LocationManager mLocationManager;
-    boolean canGetLocation = true;
-    Location location;
+    private String calleAvenida;
+    private double lat = 0.0;
+    private double log = 0.0;
+    private LocationManager mLocationManager;
+    private boolean canGetLocation = true;
+    private Location location;
 
     @Nullable
     @Override
@@ -119,6 +122,7 @@ public class ReportFragment extends Fragment {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 dispatchTakePictureIntent();
             }
         });
@@ -126,10 +130,10 @@ public class ReportFragment extends Fragment {
         mButtonReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bitmap != null) {
+                if (bitmap != null && !mComentario.getText().toString().isEmpty()) {
                     encodeBitmapAndSaveToFirebase(bitmap);
                 } else {
-                    Toast.makeText(getContext(), "Reporta con una foto por favor.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Reporta con una foto y comentario por favor.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -156,11 +160,11 @@ public class ReportFragment extends Fragment {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                progressBar.setVisibility(View.GONE);
                 Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
                 result.addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        miUbicacion();
                         SaveReporte(uri.toString());
                     }
                 });
@@ -254,7 +258,6 @@ public class ReportFragment extends Fragment {
             // Get a reference to our posts
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference refDBReport = database.getReference(Constants.Tabla_Reporte);
-            miUbicacion();
             Object objectUser = LocalStorage.getLocalStorageFirebaseUser(getActivity());
             String email = (String)objectUser.getClass().getDeclaredField(Constants.email).get(objectUser);
             String uid = (String)objectUser.getClass().getDeclaredField(Constants.uid).get(objectUser);
@@ -270,18 +273,24 @@ public class ReportFragment extends Fragment {
             reporte.nombreusuario = name;
             reporte.latitud = lat;
             reporte.longitud = log;
-            reporte.nombreUbicacion = "Av. Mi Casita xD";
+            reporte.nombreUbicacion = calleAvenida;
 
             refDBReport.child(timeNow + uid).setValue(reporte)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getActivity().getApplicationContext(), "¡Se reportó con éxito!", Toast.LENGTH_SHORT).show();
+                            Fragment fragment = new ReportListFragment();
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.content_frame, fragment);
+                            ft.commit();
+                            progressBar.setVisibility(View.GONE);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(getActivity().getApplicationContext(), "¡Intentalo nuevamente por favor!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -292,12 +301,6 @@ public class ReportFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-    /**/
 
     LocationListener locListener = new LocationListener() {
         @Override
@@ -325,6 +328,7 @@ public class ReportFragment extends Fragment {
         if (location != null) {
             lat = location.getLatitude();
             log = location.getLongitude();
+            getAddress(lat, log);
         }
     }
 
@@ -428,5 +432,21 @@ public class ReportFragment extends Fragment {
             e.printStackTrace();
         }
         return location;
+    }
+
+    public void getAddress(double lat, double lng) {
+        // TODO: retornar nombre de calle y avenida
+        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            String add = obj.getAddressLine(0);
+            add = add + "\n" + obj.getCountryName();
+            calleAvenida = add;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
