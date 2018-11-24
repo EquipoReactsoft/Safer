@@ -86,10 +86,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //region FindViewById
         progressBar = findViewById(R.id.progressBar);
-
+        signInButton = findViewById(R.id.signInButton);
+        //signInButton.setSize(SignInButton.SIZE_WIDE);
+        //signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
+        loginButton =  findViewById(R.id.login_button);
+        lEditEmail = findViewById(R.id.lEditEmail);
+        lEditPassword = findViewById(R.id.lEditPassword);
         btnLogIn = findViewById(R.id.btnLogIn);
         btnIrRegisterActivity = findViewById(R.id.btnIrRegisterActivity);
+        //endregion FindViewById
+
+        callbackManager = CallbackManager.Factory.create();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -100,69 +110,52 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        signInButton = findViewById(R.id.signInButton);
-        signInButton.setSize(SignInButton.SIZE_WIDE);
-        signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
-
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, SIGN_IN_CODE);
-
             }
         });
 
-            firebaseAuth = FirebaseAuth.getInstance();
-            firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                    if (user != null) {
-                        goMainScreen();
-                    }
-                }
-            };
-
-        callbackManager = CallbackManager.Factory.create();
-        loginButton =  findViewById(R.id.login_button);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                   if (user != null) {
+                       goMainScreen();
+                   }
+            }
+        };
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                progressBar.setVisibility(View.VISIBLE);
                 goMainScreen();
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), R.string.cancel_login, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), R.string.error_login, Toast.LENGTH_SHORT).show();
             }
         });
 
         loginButton.setReadPermissions("email");
-        //btnCs = (Button) findViewById(R.id.btnCS);
-        /*btnCs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-            }
-        });*/
-
-        lEditEmail = findViewById(R.id.lEditEmail);
-        lEditPassword = findViewById(R.id.lEditPassword);
 
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
                 String email = lEditEmail.getText().toString();
                 String pass = lEditPassword.getText().toString();
 
@@ -175,11 +168,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }else if(TextUtils.isEmpty(pass)){
                     Toast.makeText(getApplicationContext(), "NECESITA INGRESAR UNA CONTRASEÑA", Toast.LENGTH_LONG).show();
                 }else {
+                    progressBar.setVisibility(View.VISIBLE);
                     firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(LoginActivity.this,
                             new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
+                                        progressBar.setVisibility(View.GONE);
                                         Toast.makeText(LoginActivity.this, "Error al Ingresa, Digite Correctamente sus Datos", Toast.LENGTH_LONG).show();
                                     } else {
                                         goMainScreen();
@@ -187,7 +182,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 }
                             });
                 }
-                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -199,7 +193,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 finish();
             }
         });
-
         PermissionLocation();
     }
 
@@ -232,11 +225,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         } else {
             Toast.makeText(this, R.string.not_log_in, Toast.LENGTH_SHORT).show();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
         progressBar.setVisibility(View.VISIBLE);
-        loginButton.setVisibility(View.GONE);
+        //loginButton.setVisibility(View.GONE);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -246,14 +240,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Toast.makeText(getApplicationContext(), R.string.firebase_error_login, Toast.LENGTH_LONG).show();
                 }
                 progressBar.setVisibility(View.GONE);
-                loginButton.setVisibility(View.VISIBLE);
+                //loginButton.setVisibility(View.VISIBLE);
             }
         });
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount signInAccount) {
         progressBar.setVisibility(View.VISIBLE);
-        signInButton.setVisibility(View.GONE);
+        //signInButton.setVisibility(View.GONE);
 
         final AuthCredential credential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -263,16 +257,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Toast.makeText(getApplicationContext(), R.string.not_firebase_auth, Toast.LENGTH_SHORT).show();
                 }
                 progressBar.setVisibility(View.GONE);
-                signInButton.setVisibility(View.VISIBLE);
+                //signInButton.setVisibility(View.VISIBLE);
             }
         });
     }
 
     private void goMainScreen() {
-        progressBar.setVisibility(View.GONE);
         Intent intent = new Intent(this, TipoDireccionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

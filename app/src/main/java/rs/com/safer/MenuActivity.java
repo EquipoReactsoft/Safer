@@ -15,6 +15,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -53,6 +54,7 @@ import java.util.Date;
 import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.ReportFragment;
 import rs.com.safer.Fragment.ObtenerCamionesFragment;
+import rs.com.safer.Fragment.ReportListFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
 import rs.com.safer.Fragment.WebFragment;
 import rs.com.safer.Models.Usuarios;
@@ -209,7 +211,6 @@ public class MenuActivity extends AppCompatActivity
                 Permission.PermissionStorage(MenuActivity.this);
                 Snackbar.make(view, "Abriendo camara para reportar...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                //TODO modificar en un buen lugar
                 dispatchTakePictureIntent();
             }
         });
@@ -263,6 +264,7 @@ public class MenuActivity extends AppCompatActivity
         if (id == R.id.nav_report) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_comunity) {
+            fragment = new ReportListFragment();
             //Intent i = new Intent(MenuActivity.this, MapsActivity.class);
             //startActivity(i);
         } else if (id == R.id.nav_information) {

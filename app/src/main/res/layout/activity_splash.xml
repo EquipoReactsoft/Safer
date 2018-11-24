@@ -7,12 +7,31 @@
     android:background="@color/colorSecondary"
     tools:context=".SplashActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/safer_lgo"
-        tools:layout_editor_absoluteX="97dp"
-        tools:layout_editor_absoluteY="163dp" />
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="520dp"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/safer_lgo"
+            tools:layout_editor_absoluteX="97dp"
+            android:layout_weight="0"
+            tools:layout_editor_absoluteY="163dp" />
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textSize="40dp"
+            android:fontFamily="serif-monospace"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:layout_weight="3"
+            android:text="@string/safer_name_upper_case"/>
+    </LinearLayout>
+
+
 </RelativeLayout>

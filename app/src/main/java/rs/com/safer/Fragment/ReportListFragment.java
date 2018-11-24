@@ -1,45 +1,36 @@
 package rs.com.safer.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import rs.com.safer.Models.Reporte;
+import rs.com.safer.Models.ReporteLista;
 import rs.com.safer.R;
+import rs.com.safer.Utils.Constants;
+import rs.com.safer.ViewHolder;
 
 public class ReportListFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    public ReportListFragment() {
-        // Required empty public constructor
-    }
-
-    public static ReportListFragment newInstance(String param1, String param2) {
-        ReportListFragment fragment = new ReportListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    RecyclerView mRecyclerView;
+    FirebaseDatabase mFirebaseDatabase;
+    DatabaseReference mRef;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -49,32 +40,39 @@ public class ReportListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_report_list, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+        actionBar.setTitle("Posts List");
+
+        mRecyclerView = getView().findViewById(R.id.recyclerView_reportList);
+        mRecyclerView.setHasFixedSize(true);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = mFirebaseDatabase.getReference(Constants.Tabla_Reporte);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+    public void onStart() {
+        super.onStart();
+        FirebaseRecyclerAdapter<ReporteLista, ViewHolder> firebaseRecyclerAdapter  = new FirebaseRecyclerAdapter<ReporteLista, ViewHolder>(
+                ReporteLista.class,
+                R.layout.row,
+                ViewHolder.class,
+                mRef
+        ) {
+            @Override
+            protected void populateViewHolder(ViewHolder viewHolder, ReporteLista model, int position) {
+                viewHolder.setDetails(getActivity().getApplicationContext(), model.getNombreUbicacion(), model.getFotoUsuario(), model.getNombreusuario(), model.getFecha());
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+            }
+        };
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+
     }
 }
