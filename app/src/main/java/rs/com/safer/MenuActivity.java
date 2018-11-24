@@ -50,6 +50,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import rs.com.safer.Fragment.InformateFragment;
 import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.ReportFragment;
 import rs.com.safer.Fragment.ObtenerCamionesFragment;
@@ -267,32 +269,42 @@ public class MenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_comunity) {
             //Intent i = new Intent(MenuActivity.this, MapsActivity.class);
             //startActivity(i);
-        } else if (id == R.id.nav_information) {
+        } else if (id == R.id.nav_informando) {
            /* mMapFragment = new UbicacionFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, mMapFragment);
             ft.commit();*/
-            fragment = new WebFragment();
-        } else if (id == R.id.nav_contact) {
-            /*mMapFragment = new UbicacionFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, mMapFragment);
-            ft.commit();*/
-            fragment = new LocationFragment();
-            /*LocationFragment lf = new LocationFragment();
-            transaction.replace(R.id.fragment, lf);
-            transaction.commit();*/
-        } else if (id == R.id.nav_web) {
+            fragment = new InformateFragment();
+        }else if (id == R.id.nav_ubicacion) {
+
+            /*Bundle args = new Bundle();
+                   args.putDouble("lat", lat);
+                   args.putDouble("log", log);
+            fragment.setArguments(args);*/
             Intent intent = new Intent(this, ObtenerCamionesFragment.class);
 
             intent.putExtra("lat", lat);
             intent.putExtra("log", log);
 
             fragment = new ObtenerCamionesFragment();
-            /*Bundle args = new Bundle();
-                   args.putDouble("lat", lat);
-                   args.putDouble("log", log);
-            fragment.setArguments(args);*/
+        } else if (id == R.id.nav_informando) {
+            /*mMapFragment = new UbicacionFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, mMapFragment);
+            ft.commit();*/
+
+            //fragment = new LocationFragment();
+
+            /*LocationFragment lf = new LocationFragment();
+            transaction.replace(R.id.fragment, lf);
+            transaction.commit();*/
+            fragment = new InformateFragment();
+        } else if(id == R.id.nav_share){
+
+        } else if(id == R.id.nav_www){
+
+        } else if(id == R.id.nav_location){
+            fragment = new WebFragment();
         }
 
         if (fragment != null) {

@@ -13,7 +13,11 @@
             android:icon="@drawable/team"
             android:title="Apoya a tu Comunidad" />
         <item
-            android:id="@+id/nav_information"
+            android:id="@+id/nav_ubicacion"
+            android:icon="@drawable/nav_location"
+            android:title="Ubicacion Actual" />
+        <item
+            android:id="@+id/nav_informando"
             android:icon="@drawable/information"
             android:title="Informate" />
         <item
@@ -21,13 +25,13 @@
             android:icon="@drawable/share"
             android:title="Comparte" />
         <item
-            android:id="@+id/nav_contact"
-            android:icon="@drawable/message"
-            android:title="Contactanos" />
+            android:id="@+id/nav_www"
+            android:icon="@drawable/www2"
+            android:title="SitioWeb" />
         <item
-            android:id="@+id/nav_web"
+            android:id="@+id/nav_location"
             android:icon="@drawable/global"
-            android:title="Sitio Web" />
+            android:title="Contactenos" />
     </group>
 
     <!--<item android:title="Communicate">
