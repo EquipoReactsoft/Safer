@@ -9,7 +9,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="28dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -17,19 +17,19 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.102">
+        app:layout_constraintVertical_bias="0.777">
 
         <TextView
             android:id="@+id/txtAn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Notificar noticias y reportes"
             android:textSize="15dp"
-            android:text="Recibir notificaciones de noticias y reportes"
             tools:layout_editor_absoluteX="115dp"
             tools:layout_editor_absoluteY="319dp" />
 
@@ -44,26 +44,26 @@
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="27dp"
+        android:layout_height="31dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="340dp"
         android:orientation="horizontal"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/txtAn2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recibir notificaciones de noticias y reportes"
+            android:text="Mostrar ayuda"
             tools:layout_editor_absoluteX="115dp"
             tools:layout_editor_absoluteY="319dp" />
 
@@ -77,6 +77,38 @@
 
     </LinearLayout>
 
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        card_view:cardBackgroundColor="@color/colorSecondary"
+        card_view:cardCornerRadius="4dp"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="NOTIFICACIONES"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </android.support.v7.widget.CardView>
 
 
 </android.support.constraint.ConstraintLayout>

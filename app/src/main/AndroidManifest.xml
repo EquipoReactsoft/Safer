@@ -90,7 +90,10 @@
         <activity
             android:name=".UserInfoActivity"
             android:theme="@style/AppTheme.Presentation" />
-        <activity android:name=".NotificacionesActivity"></activity>
+        <activity android:name=".NotificacionesActivity"
+                  android:theme="@style/AppTheme.Presentation">
+
+        </activity>
     </application>
 
 </manifest>

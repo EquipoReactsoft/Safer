@@ -11,13 +11,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/back_button"
         android:text="@string/link_account"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textAllCaps="false"
         android:layout_marginTop="10dp"
         android:textAlignment="textStart"
         android:layout_gravity="start"
         android:drawableLeft="@drawable/user_op"
         android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="10dp"
         />
 
     <Button
@@ -26,12 +28,14 @@
         android:layout_height="wrap_content"
         android:background="@drawable/back_button"
         android:text="@string/link_notification"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
         android:drawableLeft="@drawable/notification_op"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="10dp"/>
 
     <Button
         android:id="@+id/btnPrivacySetting"
@@ -39,12 +43,14 @@
         android:layout_height="wrap_content"
         android:background="@drawable/back_button"
         android:text="@string/link_Privacity"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
         android:drawableLeft="@drawable/privacy_op"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="10dp"/>
 
     <Button
         android:id="@+id/btnAboutSetting"
@@ -52,12 +58,14 @@
         android:layout_height="wrap_content"
         android:background="@drawable/back_button"
         android:text="@string/link_About"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
         android:drawableLeft="@drawable/information_op"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="10dp"/>
 
     <Button
         android:id="@+id/btnLogOutSetting"
@@ -65,11 +73,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/back_button"
         android:text="@string/link_logout"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textAllCaps="false"
         android:textAlignment="textStart"
         android:layout_gravity="start"
         android:drawableLeft="@drawable/logout_op"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="10dp"/>
 
 </LinearLayout>

@@ -21,7 +21,7 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
 
     private GoogleApiClient googleApiClient;
 
-    private Button btnLogOut, btnAboutSetting, btnPrivacySetting, btnAccountSetting;
+    private Button btnLogOut, btnAboutSetting, btnPrivacySetting, btnAccountSetting, btnNotificationSetting;
 
     private FirebaseAuth firebaseAuth;
 
@@ -38,7 +38,7 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
         btnAboutSetting = (Button) findViewById(R.id.btnAboutSetting);
         btnPrivacySetting = (Button) findViewById(R.id.btnPrivacySetting);
         btnAccountSetting = (Button) findViewById(R.id.btnAccountSetting);
-
+        btnNotificationSetting = (Button) findViewById(R.id.btnNotificationSetting);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -89,7 +89,13 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
             }
         });
 
-
+        btnNotificationSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(SettingActivity.this, NotificacionesActivity.class);
+                startActivity(i);
+            }
+        });
         firebaseAuth = FirebaseAuth.getInstance();
 //        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
 //            @Override

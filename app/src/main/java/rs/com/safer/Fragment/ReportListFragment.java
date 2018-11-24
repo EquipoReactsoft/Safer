@@ -53,9 +53,8 @@ public class ReportListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-
-        actionBar.setTitle("Listado de Reportes");
-
+        //actionBar.setTitle("Apoya a tu Comunidad");
+        getActivity().setTitle("Apoya a tu Comunidad");
         mRecyclerView = getView().findViewById(R.id.recyclerView_reportList);
         mRecyclerView.setHasFixedSize(true);
 
