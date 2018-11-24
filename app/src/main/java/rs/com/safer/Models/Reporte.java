@@ -17,13 +17,12 @@ public class Reporte {
     public Double latitud;
     public Double longitud;
     public String nombreusuario;
-    public String fotoUsuario;
     public String nombreUbicacion;
 
     public Reporte() {
     }
 
-    public Reporte(String id, String url, Date fecha, String comentario, Boolean limpio, Double latitud, Double longitud, String nombreusuario, String fotoUsuario, String nombreUbicacion) {
+    public Reporte(String id, String url, Date fecha, String comentario, Boolean limpio, Double latitud, Double longitud, String nombreusuario, String nombreUbicacion) {
         this.rid = rid;
         this.url = url;
         this.fecha = fecha;
@@ -32,7 +31,6 @@ public class Reporte {
         this.latitud = latitud;
         this.longitud = longitud;
         this.nombreusuario = nombreusuario;
-        this.fotoUsuario = fotoUsuario;
         this.nombreUbicacion = nombreUbicacion;
     }
 
@@ -47,7 +45,6 @@ public class Reporte {
         result.put("latitud", latitud);
         result.put("longitud", longitud);
         result.put("nombreusuario", nombreusuario);
-        result.put("fotoUsuario", fotoUsuario);
         result.put("nombreUbicacion", nombreUbicacion);
 
         return result;

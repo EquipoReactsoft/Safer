@@ -22,17 +22,19 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         mView = itemView;
     }
 
-    public void setDetails(Context context, String title, String image, String user, String date){
+    public void setDetails(Context context, String title, String image, String user, String date, String photo){
         TextView mTitleCV = mView.findViewById(R.id.titleCardView);
         //TextView mDescriptionCV = mView.findViewById(R.id.descriptionCardView);
         ImageView mImageCV = mView.findViewById(R.id.imageCardView);
         TextView mUserCV = mView.findViewById(R.id.userCardView);
         TextView mDateCV = mView.findViewById(R.id.dateCardView);
+        ImageView mPhoto = mView.findViewById(R.id.userPrefilCardView);
 
         mTitleCV.setText(title);
         //mDescriptionCV.setText(description);
         Picasso.get().load(image).into(mImageCV);
         mUserCV.setText(user);
         mDateCV.setText(date);
+        Picasso.get().load(photo).into(mPhoto);
     }
 }

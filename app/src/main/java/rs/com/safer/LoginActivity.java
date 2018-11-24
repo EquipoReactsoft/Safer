@@ -39,18 +39,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import rs.com.safer.Models.Usuarios;
 import rs.com.safer.Utils.Constants;
 import rs.com.safer.Utils.LocalStorage;
 
@@ -127,12 +116,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                progressBar.setVisibility(View.INVISIBLE);
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-
-
                    if (user != null) {
                         try {
-                            //LocalStorage.getLocalStorageLatLog(LoginActivity.this);
+                            //Guardar en local storage
+                            LocalStorage.setLocalStorageFirebaseUser(user, LoginActivity.this);
+
                             Object objectUser = LocalStorage.getLocalStorageLatLog(LoginActivity.this);
                             String slat =  objectUser.getClass().getDeclaredField(Constants.user_lat_obj).get(objectUser).toString();
                             String slon =  objectUser.getClass().getDeclaredField(Constants.user_lon_obj).get(objectUser).toString();
@@ -145,8 +135,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         }catch (IllegalAccessException e) {
                             e.printStackTrace();
+                            progressBar.setVisibility(View.GONE);
                         } catch (NoSuchFieldException e) {
                             e.printStackTrace();
+                            progressBar.setVisibility(View.GONE);
                         }
 
                     }
@@ -212,6 +204,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnIrRegisterActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(i);
                 finish();
@@ -290,10 +283,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Intent intent = new Intent(this, TipoDireccionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void goMenu() {
-        progressBar.setVisibility(View.GONE);
         Intent intent = new Intent(this, MenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

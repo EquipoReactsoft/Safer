@@ -111,22 +111,7 @@ public class MenuActivity extends AppCompatActivity
         photoUserMenu = mHeaderView.findViewById(R.id.imageMenu);
         nameUserMenu = mHeaderView.findViewById(R.id.userMenu);
         descUserMenu = mHeaderView.findViewById(R.id.descMenu);
-        mProgressDialog1 = new ProgressDialog(this);
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Upload");
         //endregion
-
-        //region InitializeGmailAuth
-        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    setUserData(user);
-                }
-            }
-        };
-        //endregion InitializeGmailAuth
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -134,9 +119,6 @@ public class MenuActivity extends AppCompatActivity
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
-                    //LocalStorage.getLocalStorageFirebaseUser(MenuActivity.this);
-
                     setUserData(user);
                     DatabaseReference rootRef;
                     rootRef = FirebaseDatabase.getInstance().getReference();
@@ -153,22 +135,6 @@ public class MenuActivity extends AppCompatActivity
                                 } else {
                                     exist = false;
                                 }
-                            }
-
-                            if (exist == true) {
-
-                            } else {
-                                /*lat = getIntent().getDoubleExtra("lat", 0.0);
-                                log = getIntent().getDoubleExtra("log", 0.0);
-                                Usuarios usuario = new Usuarios();
-                                         usuario.setCorreo(user.getEmail());
-                                         usuario.setPassword(user.getUid());
-                                         usuario.setLatitud(lat);
-                                         usuario.setLongitud(log);
-
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference usuariosRef = database.getReference().getRef();
-                                usuariosRef.child("Usuarios").push().setValue(usuario);*/
                             }
                         }
 
@@ -261,21 +227,17 @@ public class MenuActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         Fragment fragment = null;
         int id = item.getItemId();
 
         if (id == R.id.nav_report) {
             fragment = new ReportFragment();
+
         } else if (id == R.id.nav_comunity) {
             fragment = new ReportListFragment();
-            //Intent i = new Intent(MenuActivity.this, MapsActivity.class);
-            //startActivity(i);
+
         } else if (id == R.id.nav_informando) {
-           /* mMapFragment = new UbicacionFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, mMapFragment);
-            ft.commit();*/
             fragment = new InformateFragment();
         }else if (id == R.id.nav_ubicacion) {
 
@@ -290,21 +252,12 @@ public class MenuActivity extends AppCompatActivity
 
             fragment = new ObtenerCamionesFragment();
         } else if (id == R.id.nav_informando) {
-            /*mMapFragment = new UbicacionFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, mMapFragment);
-            ft.commit();*/
 
-            //fragment = new LocationFragment();
 
-            /*LocationFragment lf = new LocationFragment();
-            transaction.replace(R.id.fragment, lf);
-            transaction.commit();*/
+
             fragment = new InformateFragment();
         } else if(id == R.id.nav_share){
-
         } else if(id == R.id.nav_www){
-
         } else if(id == R.id.nav_location){
             fragment = new WebFragment();
         }
@@ -413,9 +366,6 @@ public class MenuActivity extends AppCompatActivity
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inPurgeable = true;
-
-            //Intent intent = new Intent (this, ReportFragment.class);
-            //intent.putExtra("photo_file_key", photoFile);
 
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
             Bundle bundle = new Bundle();

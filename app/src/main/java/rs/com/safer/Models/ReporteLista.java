@@ -1,9 +1,16 @@
 package rs.com.safer.Models;
 
 public class ReporteLista {
-    String fecha, comentario, nombreusuario, fotoUsuario, nombreUbicacion;
+    String fecha, nombreUbicacion, nombreusuario,  url;
 
     public ReporteLista() {
+    }
+
+    public ReporteLista(String fecha, String nombreUbicacion, String nombreusuario, String url) {
+        this.fecha = fecha;
+        this.nombreUbicacion = nombreUbicacion;
+        this.nombreusuario = nombreusuario;
+        this.url = url;
     }
 
     public String getFecha() {
@@ -14,12 +21,12 @@ public class ReporteLista {
         this.fecha = fecha;
     }
 
-    public String getComentario() {
-        return comentario;
+    public String getNombreUbicacion() {
+        return nombreUbicacion;
     }
 
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
+    public void setNombreUbicacion(String nombreUbicacion) {
+        this.nombreUbicacion = nombreUbicacion;
     }
 
     public String getNombreusuario() {
@@ -30,19 +37,11 @@ public class ReporteLista {
         this.nombreusuario = nombreusuario;
     }
 
-    public String getFotoUsuario() {
-        return fotoUsuario;
+    public String getUrl() {
+        return url;
     }
 
-    public void setFotoUsuario(String fotoUsuario) {
-        this.fotoUsuario = fotoUsuario;
-    }
-
-    public String getNombreUbicacion() {
-        return nombreUbicacion;
-    }
-
-    public void setNombreUbicacion(String nombreUbicacion) {
-        this.nombreUbicacion = nombreUbicacion;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

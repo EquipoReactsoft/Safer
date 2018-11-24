@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="#a4cef5"
+    app:cardBackgroundColor="#329cc0df"
     app:cardCornerRadius="3dp"
     app:cardElevation="3dp"
     app:contentPadding="5dp"
@@ -21,12 +21,12 @@
 
             <TextView
                 android:id="@+id/titleCardView"
-                android:layout_width="346dp"
-                android:layout_height="wrap_content"
+                android:layout_width="340dp"
+                android:layout_height="25dp"
                 android:text="Title"
                 android:textAlignment="center"
                 android:textColor="#000"
-                android:textSize="22sp" />
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -39,7 +39,7 @@
         <ImageView
             android:id="@+id/imageCardView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"/>
 
@@ -48,13 +48,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userPrefilCardView"
-                android:layout_width="9dp"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_gravity=""
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="start"
                 android:textAlignment="textStart"
+                android:src="@drawable/profile_user"
                 app:srcCompat="@drawable/user_op" />
 
             <!--<TextView
@@ -70,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAlignment="textStart"
+                android:textColor="#4b4848"
                 android:text="Usuario"
                 android:gravity="start" />
 
@@ -79,6 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAlignment="textEnd"
+                android:textColor="#4b4a4a"
                 android:text="Fecha"
                 android:gravity="end" />
         </LinearLayout>
