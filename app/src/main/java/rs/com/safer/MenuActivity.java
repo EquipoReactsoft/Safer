@@ -51,6 +51,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import rs.com.safer.Fragment.InformateFragment;
 import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.ReportFragment;
 import rs.com.safer.Fragment.ObtenerCamionesFragment;
@@ -235,17 +237,29 @@ public class MenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_comunity) {
             fragment = new ReportListFragment();
 
-        } else if (id == R.id.nav_information) {
-            fragment = new WebFragment();
+        } else if (id == R.id.nav_informando) {
+            fragment = new InformateFragment();
+        }else if (id == R.id.nav_ubicacion) {
 
-        } else if (id == R.id.nav_contact) {
-            fragment = new LocationFragment();
-
-        } else if (id == R.id.nav_web) {
+            /*Bundle args = new Bundle();
+                   args.putDouble("lat", lat);
+                   args.putDouble("log", log);
+            fragment.setArguments(args);*/
             Intent intent = new Intent(this, ObtenerCamionesFragment.class);
+
             intent.putExtra("lat", lat);
             intent.putExtra("log", log);
+
             fragment = new ObtenerCamionesFragment();
+        } else if (id == R.id.nav_informando) {
+
+
+
+            fragment = new InformateFragment();
+        } else if(id == R.id.nav_share){
+        } else if(id == R.id.nav_www){
+        } else if(id == R.id.nav_location){
+            fragment = new WebFragment();
         }
 
         if (fragment != null) {

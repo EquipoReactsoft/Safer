@@ -1,13 +1,9 @@
 package rs.com.safer.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +28,9 @@ import rs.com.safer.Utils.LocalStorage;
 
 public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallback {
 
-    private DatabaseReference rootRef;
-    private double lat =  0.0;
-    private double log =  0.0;
+    DatabaseReference rootRef;
+    double lat =  0.0;
+    double log =  0.0;
     private GoogleMap mMap;
     private MapView mMapView;
     private View mView;
@@ -52,7 +48,6 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_obtener_camiones, container, false);
 
-        Bundle extras = getActivity().getIntent().getExtras();
         try {
             Object objectUser = LocalStorage.getLocalStorageLatLog(getActivity());
 
@@ -77,8 +72,13 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+<<<<<<< HEAD
         mMapView = mView.findViewById(R.id.mapCamiones);
-        getActivity().setTitle("Ubicación Actual");
+
+=======
+        mMapView = (MapView) mView.findViewById(R.id.mapCamiones);
+        getActivity().setTitle("UbicaciÃ³n Actual");
+>>>>>>> 5d5172f6aff5a771af2e8b669cdf50103c00f6a6
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
