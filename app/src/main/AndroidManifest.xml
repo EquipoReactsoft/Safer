@@ -35,6 +35,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyARmjL7MdpRA17zIlpLFa6K4vnSJHMw4oM" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"
@@ -82,13 +83,14 @@
             android:theme="@style/AppTheme.Presentation" />
         <activity
             android:name=".AcercaDeActivity"
-            android:theme="@style/AppTheme.Presentation"></activity>
+            android:theme="@style/AppTheme.Presentation" />
         <activity
             android:name=".PoliticaPrivacidadActivity"
-            android:theme="@style/AppTheme.Presentation"></activity>
+            android:theme="@style/AppTheme.Presentation" />
         <activity
             android:name=".UserInfoActivity"
-            android:theme="@style/AppTheme.Presentation"></activity>
+            android:theme="@style/AppTheme.Presentation" />
+        <activity android:name=".NotificacionesActivity"></activity>
     </application>
 
 </manifest>
