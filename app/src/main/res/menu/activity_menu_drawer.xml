@@ -15,7 +15,7 @@
         <item
             android:id="@+id/nav_ubicacion"
             android:icon="@drawable/nav_location"
-            android:title="Ubicacion Actual" />
+            android:title="Ubicación Actual" />
         <item
             android:id="@+id/nav_informando"
             android:icon="@drawable/information"

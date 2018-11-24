@@ -78,7 +78,7 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView = mView.findViewById(R.id.mapCamiones);
-        getActivity().setTitle("Ubicación Actual");
+        getActivity().setTitle("UbicaciÃ³n Actual");
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();

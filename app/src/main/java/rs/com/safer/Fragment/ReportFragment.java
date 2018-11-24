@@ -262,6 +262,7 @@ public class ReportFragment extends Fragment {
             String email = (String)objectUser.getClass().getDeclaredField(Constants.email).get(objectUser);
             String uid = (String)objectUser.getClass().getDeclaredField(Constants.uid).get(objectUser);
             String name = (String)objectUser.getClass().getDeclaredField(Constants.name).get(objectUser);
+            String photoUser = (String)objectUser.getClass().getDeclaredField(Constants.photo).get(objectUser);
             String timeNow = new SimpleDateFormat("yyyyMMdd_HHmmss_").format(Calendar.getInstance().getTime());
 
             Reporte reporte = new Reporte();
@@ -274,6 +275,7 @@ public class ReportFragment extends Fragment {
             reporte.latitud = lat;
             reporte.longitud = log;
             reporte.nombreUbicacion = calleAvenida;
+            reporte.photoUser = photoUser;
 
             refDBReport.child(timeNow + uid).setValue(reporte)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {

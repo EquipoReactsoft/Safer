@@ -18,11 +18,12 @@ public class Reporte {
     public Double longitud;
     public String nombreusuario;
     public String nombreUbicacion;
+    public String photoUser;
 
     public Reporte() {
     }
 
-    public Reporte(String id, String url, Date fecha, String comentario, Boolean limpio, Double latitud, Double longitud, String nombreusuario, String nombreUbicacion) {
+    public Reporte(String rid, String url, Date fecha, String comentario, Boolean limpio, Double latitud, Double longitud, String nombreusuario, String nombreUbicacion, String photoUser) {
         this.rid = rid;
         this.url = url;
         this.fecha = fecha;
@@ -32,6 +33,7 @@ public class Reporte {
         this.longitud = longitud;
         this.nombreusuario = nombreusuario;
         this.nombreUbicacion = nombreUbicacion;
+        this.photoUser = photoUser;
     }
 
     @Exclude
@@ -46,6 +48,7 @@ public class Reporte {
         result.put("longitud", longitud);
         result.put("nombreusuario", nombreusuario);
         result.put("nombreUbicacion", nombreUbicacion);
+        result.put("photoUser", photoUser);
 
         return result;
     }

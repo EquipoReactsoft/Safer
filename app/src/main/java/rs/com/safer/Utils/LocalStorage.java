@@ -30,12 +30,13 @@ public class LocalStorage {
         final String email = settings.getString(Constants.user_email, "");
         final String uid = settings.getString(Constants.user_uid, "");
         final String name = settings.getString(Constants.user_name, "");
+        final String photo = settings.getString(Constants.user_photo, "");
 
         Object object = new Object() {
             final String user_email_obj = email;
             final String user_uid_obj = uid;
             final String user_name_obj = name;
-            final String user_photo_obj = name;
+            final String user_photo_obj = photo;
         };
         return object;
     }

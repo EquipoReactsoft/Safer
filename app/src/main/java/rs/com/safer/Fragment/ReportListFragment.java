@@ -90,19 +90,10 @@ public class ReportListFragment extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(ViewHolder viewHolder, Reporte model, int position) {
-                try {
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Object objectUser = LocalStorage.getLocalStorageFirebaseUser(getActivity());
-                String photo = (String)objectUser.getClass().getDeclaredField(Constants.photo).get(objectUser);
 
-
-                viewHolder.setDetails(getActivity().getApplicationContext(), model.nombreUbicacion, model.url, model.nombreusuario, formatter.format(model.fecha), photo);
-
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                }
+                viewHolder.setDetails(getActivity().getApplicationContext(), model.nombreUbicacion, model.url, model.nombreusuario, formatter.format(model.fecha), model.photoUser);
+                
             }
         };
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
