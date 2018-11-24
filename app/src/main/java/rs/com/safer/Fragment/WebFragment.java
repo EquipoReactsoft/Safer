@@ -32,7 +32,7 @@ public class WebFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Web y Redes Sociales");
+        getActivity().setTitle("Contactanos");
         saferLink = getView().findViewById(R.id.saferLink);
         saferFacebook = getView().findViewById(R.id.saferFacebook);
 
