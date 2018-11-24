@@ -45,10 +45,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import rs.com.safer.Models.Usuarios;
+import rs.com.safer.Utils.Constants;
+import rs.com.safer.Utils.LocalStorage;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
@@ -80,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private Boolean exist;
 
     //endregion DeclarationVariable
-
+    //Double lat, log;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,9 +128,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
+
                    if (user != null) {
-                       goMainScreen();
-                   }
+                        try {
+                            //LocalStorage.getLocalStorageLatLog(LoginActivity.this);
+                            Object objectUser = LocalStorage.getLocalStorageLatLog(LoginActivity.this);
+                            String slat =  objectUser.getClass().getDeclaredField(Constants.user_lat_obj).get(objectUser).toString();
+                            String slon =  objectUser.getClass().getDeclaredField(Constants.user_lon_obj).get(objectUser).toString();
+
+                            if(!slat.equals("") && !slon.equals("")){
+                                goMenu();
+                            }else{
+                                goTipoDireccion();
+                            }
+
+                        }catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchFieldException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
             }
         };
 
@@ -134,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onSuccess(LoginResult loginResult) {
                 progressBar.setVisibility(View.VISIBLE);
-                goMainScreen();
+                goTipoDireccion();
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
@@ -177,7 +201,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         progressBar.setVisibility(View.GONE);
                                         Toast.makeText(LoginActivity.this, "Error al Ingresa, Digite Correctamente sus Datos", Toast.LENGTH_LONG).show();
                                     } else {
-                                        goMainScreen();
+                                        goTipoDireccion();
                                     }
                                 }
                             });
@@ -262,8 +286,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
-    private void goMainScreen() {
+    private void goTipoDireccion() {
         Intent intent = new Intent(this, TipoDireccionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void goMenu() {
+        progressBar.setVisibility(View.GONE);
+        Intent intent = new Intent(this, MenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         progressBar.setVisibility(View.GONE);

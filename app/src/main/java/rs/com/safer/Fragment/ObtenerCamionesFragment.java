@@ -32,6 +32,8 @@ import java.util.List;
 import rs.com.safer.Models.Camion;
 import rs.com.safer.Models.Usuarios;
 import rs.com.safer.R;
+import rs.com.safer.Utils.Constants;
+import rs.com.safer.Utils.LocalStorage;
 
 
 public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallback {
@@ -84,8 +86,21 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
         mView = inflater.inflate(R.layout.fragment_obtener_camiones, container, false);
 
         Bundle extras = getActivity().getIntent().getExtras();
-            lat = extras.getDouble ("lat");//= getArguments() != null ? getArguments().getDouble("lat") : 0.0;
-            log = extras.getDouble ("log");//= getArguments() != null ? getArguments().getDouble("log") : 0.0;
+        try {
+            Object objectUser = LocalStorage.getLocalStorageLatLog(getActivity());
+
+            String slat = objectUser.getClass().getDeclaredField(Constants.user_lat_obj).get(objectUser).toString();
+            String slog = objectUser.getClass().getDeclaredField(Constants.user_lon_obj).get(objectUser).toString();
+
+            lat = Double.parseDouble(slat);
+            log = Double.parseDouble(slog);
+        }catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+            //lat = extras.getDouble ("lat");//= getArguments() != null ? getArguments().getDouble("lat") : 0.0;
+            //log = extras.getDouble ("log");//= getArguments() != null ? getArguments().getDouble("log") : 0.0;
 
         return mView;
     }
@@ -111,8 +126,8 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
         /*for(Marker marker:realTimeMarkers){
             marker.remove();
         }*/
-        //LatLng latLng = new LatLng(lat, log);
-        //mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
+        LatLng latLng = new LatLng(lat, log);
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
 
         rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
             @Override
@@ -123,7 +138,8 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
                 }
                 for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
                     Usuarios usuarios = noteDataSnapshot.getValue(Usuarios.class);
-                    if(usuarios.getLatitud() != 0 && usuarios.getLongitud() != 0){
+                    if(usuarios.getLatitud() != 0 && usuarios.getLongitud() != 0
+                            /*usuarios.getCorreo() != */ ){
                         LatLng latLng = new LatLng(usuarios.getLatitud(), usuarios.getLongitud());
 
                         mMap.addMarker(new MarkerOptions().position(latLng).title("")
