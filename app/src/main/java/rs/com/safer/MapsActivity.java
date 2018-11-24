@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -48,6 +49,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import rs.com.safer.Models.Usuarios;
+import rs.com.safer.Utils.Constants;
+import rs.com.safer.Utils.LocalStorage;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
@@ -83,7 +86,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
                     rootRef = FirebaseDatabase.getInstance().getReference();
 
                     rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
@@ -91,8 +93,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onDataChange(DataSnapshot datasnapshot) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
+
                             final DatabaseReference usuariosRef = database.getReference().getRef();
                             Usuarios usuario;
+
                             try {
 
                                 for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
@@ -107,6 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
 
                                 if (!exist) {
+
                                     String gmail="google.com";
                                     String facebook="facebook.com";
                                     String firebase="firebase";
@@ -117,6 +122,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     usuario.setPassword(user.getUid());
                                     usuario.setLatitud(lat);
                                     usuario.setLongitud(log);
+
+                                    LatLng latLng = new LatLng(lat, log);
+                                    LocalStorage.setLocalStorageLatLog (latLng,MapsActivity.this);
+
 
                                     /*for (UserInfo userInfo: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                                         if (userInfo.getProviderId().equals(user.getProviderId()))
@@ -143,6 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     usuariosRef.child("Usuarios").push().setValue(usuario);
                                 }
 
+
                                 Intent i = new Intent(MapsActivity.this, MenuActivity.class);
                                 startActivity(i);
                             } catch (Exception e) {
@@ -153,6 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 usuarioc.setCorreo("@");
                                 usuariosRef.child("Usuarios").push().setValue(usuarioc);
                             }
+
                         }
 
                         @Override
@@ -161,6 +172,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
 
                     });
+
+                    //LocalStorage.setLocalStorageFirebaseUser(user,MapsActivity.this);
+                    /*
+                    try {
+                        Object objectUser = LocalStorage.getLocalStorageFirebaseUser(MapsActivity.this);
+                        Double lat = (Double)objectUser.getClass().getDeclaredField(Constants.user_latitud).get(objectUser);
+                        Double log = (Double)objectUser.getClass().getDeclaredField(Constants.user_longitud).get(objectUser);
+                    }catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    }
+                    */
+                    /*if(lat!=0 && log!=0){
+                        Intent i = new Intent(MapsActivity.this, MenuActivity.class);
+                        startActivity(i);
+                    }else{
+
+                    }
+                    */
+
                 }
             }
         };
@@ -180,6 +212,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         miUbicacion();
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        mMap.setMyLocationEnabled(true);
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
