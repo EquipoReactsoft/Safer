@@ -42,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:background="@drawable/loading_per"/>
 
         <LinearLayout
             android:layout_width="match_parent"

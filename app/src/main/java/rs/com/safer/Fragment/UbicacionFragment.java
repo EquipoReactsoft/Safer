@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -188,14 +189,18 @@ public class UbicacionFragment extends Fragment implements OnMapReadyCallback {
             //return;
         }
         Location location;
-
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
-        if (location == null) {
+        location = getLastKnownLocation();
+        while (location == null) {
             location = getLastKnownLocation();
-        }
-        if (location == null) {
-            location = getLocation();
+            if (location == null) {
+                location = getLocation();
+            }
+            if (location == null) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+            if (location == null){
+                Toast.makeText(getContext(), "No se ha podido obtener la direccion, intentando obtener direccion.", Toast.LENGTH_SHORT).show();
+            }
         }
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates

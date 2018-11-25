@@ -137,6 +137,8 @@ public class ReportFragment extends Fragment {
                 }
             }
         });
+        miUbicacion();
+
     }
 
     public void encodeBitmapAndSaveToFirebase(Bitmap bitmap) {
@@ -164,7 +166,6 @@ public class ReportFragment extends Fragment {
                 result.addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        miUbicacion();
                         SaveReporte(uri.toString());
                     }
                 });
@@ -183,6 +184,8 @@ public class ReportFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        progressBar.setVisibility(View.GONE);
+
     }
 
     private File createImageFile() throws IOException {
