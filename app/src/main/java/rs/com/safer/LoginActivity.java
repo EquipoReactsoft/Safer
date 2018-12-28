@@ -144,9 +144,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             e.printStackTrace();
                             progressBar.setVisibility(View.GONE);
                         }*/
-
                     }
-
             }
         };
 

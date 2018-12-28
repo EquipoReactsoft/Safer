@@ -3,6 +3,8 @@ package rs.com.safer.Utils;
 public class Constants {
 
     public static final String Tabla_Reporte = "Reporte";
+    public static final String Tabla_Usuario = "Usuarios";
+
     public static final String DirectorioReporte = "Reporte/";
 
     public static final String user_email = "user_email_local_storage_key";
