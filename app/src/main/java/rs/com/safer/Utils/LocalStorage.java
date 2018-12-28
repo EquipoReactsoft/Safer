@@ -71,4 +71,23 @@ public class LocalStorage {
         return object;
     }
     //endregion getLocalStorageLatLog
+
+    public static void setProveedorStorageForFirebase(String proveedor, Activity activity) {
+        SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.proveedor, proveedor);
+
+        editor.commit();
+    }
+
+    public static Object getProveedorStorageForFirebase(Activity activity) {
+        SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME, 0);
+        final String proveedor = settings.getString(Constants.user_email, "");
+
+        Object object = new Object() {
+            final String user_proveedor_obj = proveedor;
+        };
+        return object;
+    }
+
 }

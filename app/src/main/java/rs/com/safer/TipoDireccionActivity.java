@@ -45,6 +45,7 @@ public class TipoDireccionActivity extends AppCompatActivity implements GoogleAp
             public void onClick(View v) {
                 Intent i = new Intent(TipoDireccionActivity.this, MapsActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -54,6 +55,7 @@ public class TipoDireccionActivity extends AppCompatActivity implements GoogleAp
             public void onClick(View v) {
                 Intent i = new Intent(TipoDireccionActivity.this, MapsActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 

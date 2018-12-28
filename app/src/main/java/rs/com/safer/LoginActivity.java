@@ -119,7 +119,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 progressBar.setVisibility(View.INVISIBLE);
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                    if (user != null) {
-                        try {
+
+
+                       goTipoDireccion();
+                       //goMenu();
+                       /*try {
                             //Guardar en local storage
                             LocalStorage.setLocalStorageFirebaseUser(user, LoginActivity.this);
 
@@ -139,7 +143,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         } catch (NoSuchFieldException e) {
                             e.printStackTrace();
                             progressBar.setVisibility(View.GONE);
-                        }
+                        }*/
 
                     }
 

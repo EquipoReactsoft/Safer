@@ -57,6 +57,7 @@ import rs.com.safer.Fragment.LocationFragment;
 import rs.com.safer.Fragment.ReportFragment;
 import rs.com.safer.Fragment.ObtenerCamionesFragment;
 import rs.com.safer.Fragment.ReportListFragment;
+import rs.com.safer.Fragment.ShareFragment;
 import rs.com.safer.Fragment.UbicacionFragment;
 import rs.com.safer.Fragment.WebFragment;
 import rs.com.safer.Models.Usuarios;
@@ -232,34 +233,28 @@ public class MenuActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_report) {
-            fragment = new ReportFragment();
-
+            fragment = new ReportFragment();      /*REPORTAR EN CAMARA*/
         } else if (id == R.id.nav_comunity) {
-            fragment = new ReportListFragment();
-
+            fragment = new ReportListFragment();  /*LISTA DE REPORTES*/
         } else if (id == R.id.nav_informando) {
-            fragment = new InformateFragment();
-        }else if (id == R.id.nav_ubicacion) {
-
+            fragment = new InformateFragment();   /*NOTICIAS ENTRE OTROS*/
+        } else if (id == R.id.nav_ubicacion) {
             /*Bundle args = new Bundle();
                    args.putDouble("lat", lat);
                    args.putDouble("log", log);
             fragment.setArguments(args);*/
             Intent intent = new Intent(this, ObtenerCamionesFragment.class);
-
             intent.putExtra("lat", lat);
             intent.putExtra("log", log);
-
-            fragment = new ObtenerCamionesFragment();
+            fragment = new ObtenerCamionesFragment(); /*LISTA DE COMIONES Y UBICACION ACTUAL*/
         } else if (id == R.id.nav_informando) {
-
-
-
             fragment = new InformateFragment();
         } else if(id == R.id.nav_share){
+            fragment = new ShareFragment();  /*COMPARTIR LA APP*/
         } else if(id == R.id.nav_www){
+
         } else if(id == R.id.nav_location){
-            fragment = new WebFragment();
+            fragment = new WebFragment();   /*WEB Y REDES SOCIALES*/
         }
 
         if (fragment != null) {

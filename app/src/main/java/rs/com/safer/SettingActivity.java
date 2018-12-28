@@ -16,6 +16,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SettingActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -24,6 +25,7 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
     private Button btnLogOut, btnAboutSetting, btnPrivacySetting, btnAccountSetting, btnNotificationSetting;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
     private ProfileTracker profileTracker;
 
@@ -57,6 +59,7 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
                     public void onResult(@NonNull Status status) {
                         if (status.isSuccess()) {
                             goLogInScreen();
+                            finish();
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.not_close_session, Toast.LENGTH_SHORT).show();
                         }
@@ -96,16 +99,18 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
                 startActivity(i);
             }
         });
+
         firebaseAuth = FirebaseAuth.getInstance();
-//        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    setUserData(user);
-//                }
-//            }
-//        };
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+           @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+               if (user != null) {
+                    //setUserData(user);
+                }
+            }
+        };
+
     }
 
     @Override
@@ -122,11 +127,28 @@ public class SettingActivity extends AppCompatActivity implements GoogleApiClien
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        //finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(firebaseAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseAuthListener != null) {
+            firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //profileTracker.stopTracking();
+        if (firebaseAuthListener != null) {
+            firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+        }
     }
 }

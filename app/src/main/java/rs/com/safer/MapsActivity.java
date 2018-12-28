@@ -99,6 +99,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     if (urs.getCorreo().equals(user.getEmail())) {
                                         exist = true;
                                         break;
+                                        /*if(urs.getLatitud() != 0 && urs.getLongitud() != 0){
+                                            exist = true;
+                                            break;
+                                        }else{
+                                            exist = false;
+                                        }*/
                                     } else {
                                         exist = false;
                                     }
@@ -109,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     String facebook="facebook.com";
                                     String firebase="firebase";
                                     String type = "";
+
                                     usuario = new Usuarios();
                                     usuario.setCorreo(user.getEmail());
                                     usuario.setPassword(user.getUid());
@@ -123,7 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                 Intent i = new Intent(MapsActivity.this, MenuActivity.class);
                                 startActivity(i);
-
+                                finish();
                             } catch (Exception e) {
                                 Usuarios usuarioc = new Usuarios();
                                 usuarioc.setLongitud(0.0);

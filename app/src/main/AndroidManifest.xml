@@ -36,6 +36,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyARmjL7MdpRA17zIlpLFa6K4vnSJHMw4oM" />
 
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider471606226683155"
+            android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"
@@ -48,11 +53,7 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.Presentation">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -90,10 +91,18 @@
         <activity
             android:name=".UserInfoActivity"
             android:theme="@style/AppTheme.Presentation" />
-        <activity android:name=".NotificacionesActivity"
-                  android:theme="@style/AppTheme.Presentation">
+        <activity
+            android:name=".NotificacionesActivity"
+            android:theme="@style/AppTheme.Presentation" />
 
+        <activity android:name=".LoginUnidadesActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        
+        <activity android:name=".PrincipalUnidadesActivity"></activity>
     </application>
 
 </manifest>
