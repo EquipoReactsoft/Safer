@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_join"
+        android:orderInCategory="100"
+        android:title="Conectarse"
+        />
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="100"
+        android:title="Desconectarse"
+        />
+    <item
+        android:id="@+id/action_close"
+        android:orderInCategory="100"
+        android:title="Salir"
+        />
+</menu>

@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+
+import rs.com.safer.Models.Unidades;
 import rs.com.safer.Models.Usuarios;
 import rs.com.safer.R;
 import rs.com.safer.Utils.Constants;
@@ -40,7 +42,7 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
     private View mView;
     private ArrayList<Marker> tmpRealTimeMarkers = new ArrayList<>();
     private ArrayList<Marker> realTimeMarkers = new ArrayList<>();
-
+    private int unaSolaVez=0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,25 +94,32 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         rootRef = FirebaseDatabase.getInstance().getReference();
-        LatLng latLng = new LatLng(lat, log);
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Mi posicion Actual"));
 
-        rootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+
+        rootRef.child("Unidades").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot datasnapshot) {
                 //List listUsers = new ArrayList();
                 for(Marker marker:realTimeMarkers){
                     marker.remove();
                 }
-                for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
-                    Usuarios usuarios = noteDataSnapshot.getValue(Usuarios.class);
-                    if(usuarios.getLatitud() != 0 && usuarios.getLongitud() != 0
-                            /*usuarios.getCorreo() != */ ){
-                        LatLng latLng = new LatLng(usuarios.getLatitud(), usuarios.getLongitud());
+                mMap.clear();
 
+                LatLng latLng1 = new LatLng(lat, log);
+                mMap.addMarker(new MarkerOptions().position(latLng1).title("Mi posicion Actual"));
+
+                for (DataSnapshot noteDataSnapshot : datasnapshot.getChildren()) {
+                    Unidades unidades = noteDataSnapshot.getValue(Unidades.class);
+
+                    if(unidades.getLatitud() != 0 && unidades.getLongitud() != 0
+                            /*usuarios.getCorreo() != */ ){
+                        LatLng latLng = new LatLng(unidades.getLatitud(), unidades.getLongitud());
+                        //mMap.clear();
                         mMap.addMarker(new MarkerOptions().position(latLng).title("")
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.location_pointer)));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                        if(unaSolaVez == 1){
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+                        }
 
                         /*Usuarios usuario = noteDataSnapshot.getValue(Usuarios.class);
                         Double latitud = usuario.getLatitud();
@@ -119,6 +128,7 @@ public class ObtenerCamionesFragment extends Fragment implements OnMapReadyCallb
                         markerOptions.position(new LatLng(latitud, longitud));
                         tmpRealTimeMarkers.add(mMap.addMarker(markerOptions));
                         */
+                        unaSolaVez++;
                     }
 
                     //mMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
